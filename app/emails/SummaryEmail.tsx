@@ -47,7 +47,7 @@ export default function SummaryEmail({
         <Column>
           <Img
             alt={`Zdjęcie ${index + 1}`}
-            // Usunięto klasy tailwind, aby uniknąć niepotrzebnego CSS
+            // Użycie stylów inline zamiast klas Tailwind wewnątrz komponentów React Email
             style={{ width: '100%', borderRadius: '12px', objectFit: 'cover' }} 
             height={288}
             src={url}
@@ -113,7 +113,7 @@ export default function SummaryEmail({
             </Text>
             <Text style={{ fontSize: '19px', lineHeight: '30px', color: '#4b5563', margin: '12px 0' }}>
               Z przyjemnością informujemy, że w dniu 
-              <strong style={{ whiteSpace: 'nowrap' }}> 📅 {currentDate}</strong> 
+              <strong style={{ whiteSpace: 'nowrap' }}> 📅 {currentDate}</strong>&nbsp;
               wykonaliśmy zlecone prace porządkowe miejsca spoczynku Państwa bliskich.
             </Text>
           </ContentWrapper>
@@ -166,7 +166,7 @@ export default function SummaryEmail({
           </Section>
         )}
 
-        {/* SEKCJA 7: OPINIA GOOGLE (ODDZIELNA SEKCJA!) (Białe tło, Ciemny tekst) */}
+        {/* SEKCJA 7: OPINIA GOOGLE (Białe tło, Ciemny tekst) */}
         <Section style={{ backgroundColor: '#ffffff', padding: '32px 0' }}>
           <ContentWrapper>
             <Section style={{ backgroundColor: '#f8f9fa', borderRadius: '12px', padding: '24px 32px', textAlign: 'center' as const }}>
@@ -196,8 +196,8 @@ export default function SummaryEmail({
           </ContentWrapper>
         </Section>
         
-        {/* SEKCJA 9: STOPKA (Zawsze czarne tło, biały tekst) - Pełna szerokość */}
-        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '20px 0', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
+        {/* SEKCJA 9: STOPKA (Zawsze czarne tło, biały tekst) - Zwiększony padding góry */}
+        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '40px 0', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
           <ContentWrapper>
             <table style={{ width: '100%', tableLayout: 'fixed' }}>
               <Row>
@@ -217,8 +217,26 @@ export default function SummaryEmail({
               </Row>
               <Row style={{ borderTop: '1px solid #333333', paddingTop: '40px', marginTop: '40px' }}>
                 <Column style={{ textAlign: 'center' as const }} colSpan={2}>
-                  <Link style={{ margin: '0 15px', color: '#f2f2f2', fontWeight: 'bold', fontSize: '16px', textDecoration: 'none', fontFamily: 'Arial, sans-serif' }} href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener">FB</Link>
-                  <Link style={{ margin: '0 15px', color: '#f2f2f2', fontWeight: 'bold', fontSize: '16px', textDecoration: 'none', fontFamily: 'Arial, sans-serif' }} href="https://x.com/czystepomnikipl/" rel="noopener">X</Link>
+                  {/* Ikona Facebook */}
+                  <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block' }}>
+                    <Img 
+                      src="https://upload.wikimedia.org/wikipedia/commons/7/71/Facebook_white_icon_svg.svg" 
+                      alt="Facebook" 
+                      width="24" 
+                      height="24" 
+                      style={{ verticalAlign: 'middle' }} 
+                    />
+                  </Link>
+                  {/* Ikona X (Twitter) */}
+                  <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block' }}>
+                    <Img 
+                      src="https://upload.wikimedia.org/wikipedia/commons/4/4f/X_logo_2023.svg" // Zaktualizowany link do ikony X, jeśli poprzedni nie zadziała (wikipedia może zmienić)
+                      alt="X (Twitter)" 
+                      width="24" 
+                      height="24" 
+                      style={{ verticalAlign: 'middle' }} 
+                    />
+                  </Link>
                 </Column>
               </Row>
             </table>
