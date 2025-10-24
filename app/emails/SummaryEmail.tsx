@@ -1,4 +1,4 @@
-import { Section, Row, Text, Column, Img, Link, Html, Head, Body, Hr } from "@react-email/components";
+import { Section, Row, Text, Column, Img, Link, Html, Head, Body, Container, Hr, Button } from "@react-email/components";
 
 interface SummaryEmailProps {
   contactName: string;
@@ -17,30 +17,29 @@ export default function SummaryEmail({
   photoBeforeUrls,
   photoAfterUrls
 }: SummaryEmailProps) {
-  const renderImageGrid = (urls: string[], prefix: string) => {
-    const images = urls.map((url, i) => (
-      <Column key={i} style={{ width: '50%', padding: '8px' }}>
-        <Img
-          alt={`${prefix} ${i + 1}`}
-          style={{ 
-            width: '100%', 
-            borderRadius: '8px', 
-            objectFit: 'cover',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            border: '1px solid #e5e7eb'
-          }}
-          height={288}
-          src={url}
-        />
-      </Column>
-    ));
-
+  const renderImageGrid = (urls: string[]) => {
     const rows = [];
-    for (let i = 0; i < images.length; i += 2) {
+    for (let i = 0; i < urls.length; i += 2) {
       rows.push(
-        <Row key={i} style={{ marginTop: '16px' }}>
-          {images[i]}
-          {images[i + 1] && images[i + 1]}
+        <Row key={i} className="mt-[16px]">
+          <Column className="w-[50%] pr-[8px]">
+            <Img
+              alt={`Zdjęcie ${i + 1}`}
+              className="w-full rounded-[12px] object-cover"
+              height={288}
+              src={urls[i]}
+            />
+          </Column>
+          {urls[i + 1] && (
+            <Column className="w-[50%] pl-[8px]">
+              <Img
+                alt={`Zdjęcie ${i + 2}`}
+                className="w-full rounded-[12px] object-cover"
+                height={288}
+                src={urls[i + 1]}
+              />
+            </Column>
+          )}
         </Row>
       );
     }
@@ -50,303 +49,181 @@ export default function SummaryEmail({
   return (
     <Html>
       <Head />
-      <Body style={{ 
-        fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-        backgroundColor: '#f9fafb',
-        margin: 0,
-        padding: 0
-      }}>
-        <Section style={{ 
-          maxWidth: '680px', 
-          margin: '0 auto',
-          backgroundColor: '#ffffff',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.08)'
-        }}>
-          {/* Header z logo */}
-          <Section style={{ 
-            background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
-            padding: '32px 40px',
-            textAlign: 'center'
-          }}>
-            <Img 
-              src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp" 
-              alt="Czyste Pomniki" 
-              style={{ 
-                maxWidth: '120px', 
-                height: 'auto',
-                margin: '0 auto 16px'
-              }}
-            />
-            <Text style={{ 
-              fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-              fontSize: '28px',
-              fontWeight: 'bold',
-              color: '#ffffff',
-              margin: 0,
-              letterSpacing: '0.5px'
-            }}>
-              Podsumowanie Wykonanych Prac
+      <Body style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif", backgroundColor: "#f6f9fc" }}>
+        <Container className="mx-auto max-w-[600px] bg-white my-[40px]">
+          {/* Header */}
+          <Section className="bg-[#1a1a1a] px-[42px] py-[32px]">
+            <table className="w-full">
+              <tr className="w-full">
+                <td align="center">
+                  <Img
+                    alt="Czyste Pomniki"
+                    height="80"
+                    src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp"
+                  />
+                </td>
+              </tr>
+              <tr className="w-full">
+                <td align="center">
+                  <Text className="my-[16px] font-semibold text-[24px] text-white leading-[32px]">
+                    Podsumowanie Wykonanych Prac
+                  </Text>
+                  <Text className="mt-[4px] mb-0 text-[14px] text-gray-300 leading-[20px]">
+                    Profesjonalna pielęgnacja miejsc pamięci
+                  </Text>
+                </td>
+              </tr>
+            </table>
+          </Section>
+
+          {/* Informacje o kliencie */}
+          <Section className="px-[42px] py-[24px]">
+            <Text className="m-0 font-semibold text-[14px] text-gray-500 leading-[20px] uppercase tracking-wide">
+              Szanowny Kliencie
+            </Text>
+            <Text className="m-0 mt-[8px] font-semibold text-[28px] text-gray-900 leading-[36px]">
+              {contactName}
+            </Text>
+            <Text className="mt-[12px] text-[16px] text-gray-600 leading-[24px]">
+              Z przyjemnością informujemy, że w dniu <strong>{currentDate}</strong> wykonaliśmy zlecone prace porządkowe miejsca spoczynku Państwa bliskich.
             </Text>
           </Section>
 
-          {/* Treść główna */}
-          <Section style={{ padding: '40px' }}>
-            {/* Informacje o kliencie */}
-            <Section style={{ 
-              backgroundColor: '#f8f9fa',
-              borderLeft: '4px solid #dc2626',
-              padding: '20px 24px',
-              borderRadius: '8px',
-              marginBottom: '32px'
-            }}>
-              <Text style={{ 
-                fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                fontSize: '14px',
-                color: '#6b7280',
-                margin: '0 0 8px 0',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                fontWeight: '600'
-              }}>
-                Szanowny Kliencie
-              </Text>
-              <Text style={{ 
-                fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                fontSize: '24px',
-                fontWeight: 'bold',
-                color: '#1f2937',
-                margin: '0 0 12px 0'
-              }}>
-                {contactName}
-              </Text>
-              <Text style={{ 
-                fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                fontSize: '16px',
-                color: '#4b5563',
-                margin: 0,
-                lineHeight: '1.6'
-              }}>
-                Z przyjemnością informujemy, że w dniu <strong style={{ color: '#1f2937' }}>{currentDate}</strong> wykonaliśmy zlecone prace porządkowe miejsca spoczynku Państwa bliskich.
-              </Text>
-            </Section>
-
-            {/* Opis prac */}
-            <Section style={{ marginBottom: '32px' }}>
-              <Text style={{ 
-                fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                fontSize: '18px',
-                fontWeight: 'bold',
-                color: '#dc2626',
-                margin: '0 0 16px 0',
-                borderBottom: '2px solid #fee2e2',
-                paddingBottom: '8px'
-              }}>
-                Zakres Wykonanych Prac
-              </Text>
-              <Text style={{ 
-                fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                fontSize: '15px',
-                color: '#374151',
-                lineHeight: '1.8',
-                margin: 0,
-                textAlign: 'justify'
-              }}>
-                {description}
-              </Text>
-            </Section>
-
-            {/* Zdjęcia przed */}
-            {photoBeforeUrls.length > 0 && (
-              <Section style={{ marginBottom: '32px' }}>
-                <Text style={{ 
-                  fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                  fontSize: '18px',
-                  fontWeight: 'bold',
-                  color: '#dc2626',
-                  margin: '0 0 16px 0',
-                  borderBottom: '2px solid #fee2e2',
-                  paddingBottom: '8px'
-                }}>
-                  Stan Przed Wykonaniem Usługi
-                </Text>
-                {renderImageGrid(photoBeforeUrls, 'Przed')}
-              </Section>
-            )}
-
-            {/* Zdjęcia po */}
-            {photoAfterUrls.length > 0 && (
-              <Section style={{ marginBottom: '32px' }}>
-                <Text style={{ 
-                  fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                  fontSize: '18px',
-                  fontWeight: 'bold',
-                  color: '#dc2626',
-                  margin: '0 0 16px 0',
-                  borderBottom: '2px solid #fee2e2',
-                  paddingBottom: '8px'
-                }}>
-                  Stan Po Wykonaniu Usługi
-                </Text>
-                {renderImageGrid(photoAfterUrls, 'Po')}
-              </Section>
-            )}
-
-            {/* Podziękowanie */}
-            <Section style={{ 
-              backgroundColor: '#f0fdf4',
-              borderRadius: '8px',
-              padding: '24px',
-              textAlign: 'center',
-              border: '1px solid #bbf7d0',
-              marginTop: '40px'
-            }}>
-              <Text style={{ 
-                fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                fontSize: '18px',
-                color: '#15803d',
-                margin: '0 0 8px 0',
-                fontWeight: 'bold'
-              }}>
-                Dziękujemy za Zaufanie
-              </Text>
-              <Text style={{ 
-                fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                fontSize: '15px',
-                color: '#166534',
-                margin: 0,
-                lineHeight: '1.6'
-              }}>
-                Jesteśmy zaszczyceni, że mogliśmy zadbać o miejsce pamięci Państwa bliskich. W razie pytań lub uwag, pozostajemy do dyspozycji.
-              </Text>
-            </Section>
+          <Section className="px-[42px]">
+            <Hr className="border-gray-200" />
           </Section>
 
-          {/* Stopka */}
-          <Section style={{ 
-            backgroundColor: '#1a1a1a',
-            padding: '40px',
-            color: '#f2f2f2'
-          }}>
-            <Row>
-              <Column style={{ width: '60%', paddingRight: '20px' }}>
-                <Text style={{ 
-                  fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                  fontSize: '20px',
-                  color: '#dc2626',
-                  fontWeight: 'bold',
-                  margin: '0 0 16px 0',
-                  letterSpacing: '0.5px'
-                }}>
-                  CzystePomniki.pl
-                </Text>
-                <Text style={{ 
-                  fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                  fontSize: '14px',
-                  color: '#e5e7eb',
-                  lineHeight: '1.8',
-                  margin: 0
-                }}>
-                  ul. Majowa 59<br />
-                  05-462 Dziechciniec<br />
-                  <br />
-                  Tel: <Link 
-                    style={{ color: '#dc2626', textDecoration: 'none', fontWeight: 'bold' }} 
-                    href="tel:+48799820556"
-                  >
-                    +48 799 820 556
-                  </Link><br />
-                  Email: <Link 
-                    style={{ color: '#dc2626', textDecoration: 'none', fontWeight: 'bold' }} 
-                    href="mailto:biuro@czystepomniki.pl"
-                  >
-                    biuro@czystepomniki.pl
-                  </Link>
-                </Text>
-              </Column>
-              <Column style={{ 
-                width: '40%', 
-                textAlign: 'right',
-                verticalAlign: 'top'
-              }}>
-                <Text style={{ 
-                  fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                  fontSize: '14px',
-                  color: '#9ca3af',
-                  lineHeight: '1.6',
-                  margin: 0,
-                  fontStyle: 'italic'
-                }}>
-                  Profesjonalne usługi<br />
-                  pielęgnacji miejsc pamięci<br />
-                  <br />
-                  Z szacunkiem i troską<br />
-                  od 2022 roku
-                </Text>
-              </Column>
-            </Row>
-
-            <Hr style={{ 
-              border: 'none',
-              borderTop: '1px solid #374151',
-              margin: '32px 0 24px 0'
-            }} />
-
-            <Row>
-              <Column style={{ textAlign: 'center' }}>
-                <Link 
-                  style={{ 
-                    fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                    margin: '0 16px',
-                    color: '#f2f2f2',
-                    fontSize: '14px',
-                    textDecoration: 'none',
-                    fontWeight: '600',
-                    letterSpacing: '0.5px'
-                  }} 
-                  href="https://www.facebook.com/people/Czystepomnikipl/" 
-                  rel="noopener"
-                >
-                  Facebook
-                </Link>
-                <Text style={{ 
-                  display: 'inline',
-                  color: '#4b5563',
-                  margin: '0 8px'
-                }}>
-                  •
-                </Text>
-                <Link 
-                  style={{ 
-                    fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-                    margin: '0 16px',
-                    color: '#f2f2f2',
-                    fontSize: '14px',
-                    textDecoration: 'none',
-                    fontWeight: '600',
-                    letterSpacing: '0.5px'
-                  }} 
-                  href="https://x.com/czystepomnikipl/" 
-                  rel="noopener"
-                >
-                  X (Twitter)
-                </Link>
-              </Column>
-            </Row>
-
-            <Text style={{ 
-              fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-              textAlign: 'center',
-              fontSize: '13px',
-              color: '#6b7280',
-              margin: '24px 0 0 0',
-              letterSpacing: '1px'
-            }}>
-              © CzystePomniki.pl 2025 • Wszelkie prawa zastrzeżone
+          {/* Opis prac */}
+          <Section className="px-[42px] py-[24px]">
+            <Text className="m-0 font-semibold text-[16px] text-gray-900 leading-[24px]">
+              Zakres Wykonanych Prac
+            </Text>
+            <Text className="mt-[12px] text-[15px] text-gray-600 leading-[24px]">
+              {description}
             </Text>
           </Section>
-        </Section>
+
+          {/* Zdjęcia przed */}
+          {photoBeforeUrls.length > 0 && (
+            <Section className="px-[42px] py-[16px]">
+              <Text className="m-0 font-semibold text-[16px] text-gray-900 leading-[24px]">
+                Przed wykonaniem usługi
+              </Text>
+              <Section className="mt-[8px]">
+                {renderImageGrid(photoBeforeUrls)}
+              </Section>
+            </Section>
+          )}
+
+          {/* Zdjęcia po */}
+          {photoAfterUrls.length > 0 && (
+            <Section className="px-[42px] py-[16px]">
+              <Text className="m-0 font-semibold text-[16px] text-gray-900 leading-[24px]">
+                Po wykonaniu usługi
+              </Text>
+              <Section className="mt-[8px]">
+                {renderImageGrid(photoAfterUrls)}
+              </Section>
+            </Section>
+          )}
+
+          {/* Opinia Google */}
+          <Section className="px-[42px] py-[32px]">
+            <Section className="bg-[#f8f9fa] rounded-[12px] px-[32px] py-[24px] text-center">
+              <Text className="m-0 font-semibold text-[18px] text-gray-900 leading-[28px]">
+                Podziel się swoją opinią
+              </Text>
+              <Text className="mt-[8px] mb-[20px] text-[14px] text-gray-600 leading-[20px]">
+                Twoja opinia pomoże nam w doskonaleniu naszych usług
+              </Text>
+              <Button
+                href="https://g.page/r/CYrcRTvHckvaEBM/review"
+                className="bg-[#1a1a1a] rounded-[8px] px-[32px] py-[12px] text-center font-semibold text-[14px] text-white leading-[20px] no-underline"
+              >
+                Zostaw opinię na Google
+              </Button>
+            </Section>
+          </Section>
+
+          <Section className="px-[42px]">
+            <Hr className="border-gray-200" />
+          </Section>
+
+          {/* Podziękowanie */}
+          <Section className="px-[42px] py-[24px]">
+            <Text className="text-center text-[16px] text-gray-600 leading-[24px] italic">
+              Dziękujemy za zaufanie i możliwość zadbania o miejsce pamięci Państwa bliskich
+            </Text>
+          </Section>
+
+          {/* Footer */}
+          <Section className="bg-[#1a1a1a] px-[42px] py-[32px]">
+            <table className="w-full">
+              <tr className="w-full">
+                <td align="center">
+                  <Img
+                    alt="Czyste Pomniki logo"
+                    height="60"
+                    src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp"
+                  />
+                </td>
+              </tr>
+              <tr className="w-full">
+                <td align="center">
+                  <Text className="my-[12px] font-semibold text-[18px] text-white leading-[24px]">
+                    CzystePomniki.pl
+                  </Text>
+                  <Text className="mt-[4px] mb-[16px] text-[14px] text-gray-400 leading-[20px] italic">
+                    Z szacunkiem i troską od 2022 roku
+                  </Text>
+                </td>
+              </tr>
+              <tr>
+                <td align="center">
+                  <Text className="my-[8px] text-[14px] text-gray-300 leading-[20px]">
+                    ul. Majowa 59, 05-462 Dziechciniec
+                  </Text>
+                  <Text className="mt-[4px] mb-[16px] text-[14px] text-gray-300 leading-[20px]">
+                    <Link href="mailto:biuro@czystepomniki.pl" className="text-gray-300 no-underline">
+                      biuro@czystepomniki.pl
+                    </Link>
+                    {" • "}
+                    <Link href="tel:+48799820556" className="text-gray-300 no-underline">
+                      +48 799 820 556
+                    </Link>
+                  </Text>
+                </td>
+              </tr>
+              <tr>
+                <td align="center">
+                  <Row className="table-cell">
+                    <Column className="pr-[12px]">
+                      <Link href="https://www.facebook.com/people/Czystepomnikipl/">
+                        <Text className="text-[14px] text-white font-semibold no-underline">
+                          Facebook
+                        </Text>
+                      </Link>
+                    </Column>
+                    <Column className="pl-[12px]">
+                      <Link href="https://x.com/czystepomnikipl/">
+                        <Text className="text-[14px] text-white font-semibold no-underline">
+                          X
+                        </Text>
+                      </Link>
+                    </Column>
+                  </Row>
+                </td>
+              </tr>
+              <tr>
+                <td align="center">
+                  <Text className="mt-[24px] text-center text-[12px] text-gray-500 leading-[16px]">
+                    © CzystePomniki.pl 2025 • Wszelkie prawa zastrzeżone
+                  </Text>
+                </td>
+              </tr>
+            </table>
+          </Section>
+        </Container>
       </Body>
     </Html>
   );
