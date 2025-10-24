@@ -28,6 +28,25 @@ export async function POST(request: NextRequest) {
       minute: '2-digit'
     })
 
+    // Process attachments synchronously
+    const attachments = []
+    for (let i = 0; i < photoBeforeFiles.length; i++) {
+      const file = photoBeforeFiles[i]
+      attachments.push({
+        filename: `przed-${i + 1}.jpg`,
+        content: Buffer.from(await file.arrayBuffer()),
+        cid: `photo-before-${i}`
+      })
+    }
+    for (let i = 0; i < photoAfterFiles.length; i++) {
+      const file = photoAfterFiles[i]
+      attachments.push({
+        filename: `po-${i + 1}.jpg`,
+        content: Buffer.from(await file.arrayBuffer()),
+        cid: `photo-after-${i}`
+      })
+    }
+
     const { data, error } = await resend.emails.send({
       from: 'Czyste Pomniki <noreply@czystepomniki.pl>',
       to: email,
@@ -110,18 +129,7 @@ export async function POST(request: NextRequest) {
           <p style="text-align: center;"><span style="font-family: 'book antiqua', palatino, serif; font-size: 12pt;">CzystePomniki 2025</span></p>
         </div>
       `,
-      attachments: [
-        ...photoBeforeFiles.map((file, index) => ({
-          filename: `przed-${index + 1}.jpg`,
-          content: Buffer.from(await file.arrayBuffer()),
-          cid: `photo-before-${index}`
-        })),
-        ...photoAfterFiles.map((file, index) => ({
-          filename: `po-${index + 1}.jpg`,
-          content: Buffer.from(await file.arrayBuffer()),
-          cid: `photo-after-${index}`
-        }))
-      ]
+      attachments
     })
 
     if (error) {
