@@ -12,44 +12,25 @@ interface SummaryEmailProps {
 // Globalne style dla Body
 const mainBodyStyle = {
   fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-  backgroundColor: "#f6f9fc", // Domyślne jasne tło
+  backgroundColor: "#f6f9fc", // Jasne tło
   fontSize: '18px',
 };
 
-// Style dla trybu ciemnego i reguły ogólne
-const finalThemeStyles = `
-  /* Reset koloru tekstu w trybie jasnym, aby uniknąć szarości z tailwind */
-  .main-content-text {
-    color: #111827 !important; /* Domyślny, ciemny kolor tekstu dla głównej treści */
-  }
-  .main-content-text-secondary {
-    color: #4b5563 !important; /* Domyślny, ciemniejszy szary dla reszty treści */
-  }
-  .main-content-bg {
-    background-color: #ffffff !important;
-  }
-  
-  /* Media Query dla Trybu Ciemnego */
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-color: #1a1a1a !important; 
-    }
-    .main-content-bg {
-      background-color: #222222 !important; /* Ciemne tło dla głównej treści */
-    }
-    
-    /* Zmiana koloru tekstu na jasny w trybie ciemnym */
-    .main-content-text {
-      color: #f2f2f2 !important; 
-    }
-    .main-content-text-secondary {
-      color: #cccccc !important; 
-    }
-    .hr {
-      border-color: #555555 !important;
-    }
-  }
-`;
+// Stałe padding dla sekcji treści (minimalny)
+const CONTENT_PADDING = '16px'; 
+
+// Stały styl dla czarnego przycisku opinii
+const opinionButtonStyle = {
+    backgroundColor: '#1a1a1a', 
+    borderRadius: '8px', 
+    padding: '12px 12px', 
+    textAlign: 'center' as const, 
+    fontWeight: 'bold', 
+    fontSize: '18px', 
+    color: '#ffffff',
+    width: '100%',
+    display: 'block',
+};
 
 export default function SummaryEmail({
   contactName,
@@ -62,11 +43,12 @@ export default function SummaryEmail({
   
   const renderImageGrid = (urls: string[]) => {
     return urls.map((url, index) => (
-      <Row key={index} className="mt-[16px]">
+      <Row key={index} style={{ marginTop: '16px' }}>
         <Column>
           <Img
             alt={`Zdjęcie ${index + 1}`}
-            className="w-full rounded-[12px] object-cover" 
+            // Usunięto klasy tailwind, aby uniknąć niepotrzebnego CSS
+            style={{ width: '100%', borderRadius: '12px', objectFit: 'cover' }} 
             height={288}
             src={url}
           />
@@ -75,167 +57,177 @@ export default function SummaryEmail({
     ));
   };
 
+  // Centralny kontener o stałej szerokości dla treści, osadzony w sekcji pełnej szerokości
+  const ContentWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: `0 ${CONTENT_PADDING}` }}>
+      {children}
+    </div>
+  );
+
   return (
     <Html>
-      <Head>
-        <style dangerouslySetInnerHTML={{ __html: finalThemeStyles }} />
-      </Head>
+      <Head />
       <Body style={mainBodyStyle}>
         
-        {/* NAGŁÓWEK (Zawsze czarne tło i biały tekst) - Pełna szerokość */}
-        {/* Style inline zapewniają, że tło i tekst są zawsze czarne/białe, niezależnie od trybu dark mode */}
-        <Section style={{ width: '100%', backgroundColor: '#000000', padding: '32px 16px' }}>
-          <table style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-            <tr>
-              <td align="center">
-                <Img
-                  alt="Czyste Pomniki Logo"
-                  height="60"
-                  src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp"
-                />
-                <h1 
-                  style={{ margin: '8px 0', fontSize: '26px', lineHeight: '34px', color: '#ffffff', fontWeight: '600' }}
-                >
-                  CzystePomniki.pl
-                </h1>
-              </td>
-            </tr>
-            <tr>
-              <td align="center">
-                <h1 
-                  style={{ margin: '16px 0', fontSize: '22px', lineHeight: '32px', color: '#ffffff', fontWeight: '600' }}
-                >
-                  Podsumowanie Wykonanych Prac
-                </h1>
-                <Text 
-                  style={{ fontSize: '16px', lineHeight: '24px', color: '#dddddd' }}
-                >
-                  Profesjonalna pielęgnacja miejsc pamięci
-                </Text>
-              </td>
-            </tr>
-          </table>
+        {/* SEKCJA 1: NAGŁÓWEK (Zawsze czarne tło, biały tekst) - Pełna szerokość */}
+        <Section style={{ width: '100%', backgroundColor: '#000000', padding: '32px 0' }}>
+          <ContentWrapper>
+            <table style={{ width: '100%' }}>
+              <tr>
+                <td align="center">
+                  <Img
+                    alt="Czyste Pomniki Logo"
+                    height="60"
+                    src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp"
+                  />
+                  <h1 
+                    style={{ margin: '8px 0', fontSize: '26px', lineHeight: '34px', color: '#ffffff', fontWeight: '600' }}
+                  >
+                    CzystePomniki.pl
+                  </h1>
+                </td>
+              </tr>
+              <tr>
+                <td align="center">
+                  <h1 
+                    style={{ margin: '16px 0', fontSize: '22px', lineHeight: '32px', color: '#ffffff', fontWeight: '600' }}
+                  >
+                    Podsumowanie Wykonanych Prac
+                  </h1>
+                  <Text 
+                    style={{ fontSize: '16px', lineHeight: '24px', color: '#dddddd', margin: '4px 0 0 0' }}
+                  >
+                    Profesjonalna pielęgnacja miejsc pamięci
+                  </Text>
+                </td>
+              </tr>
+            </table>
+          </ContentWrapper>
         </Section>
 
-        {/* GŁÓWNA TREŚĆ - Kontener wyśrodkowany z minimalnym paddingiem */}
-        <Section className="main-content-bg" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: '0 16px' }}>
-
-          {/* Informacje o kliencie - Szanowny Kliencie */}
-          <Section style={{ padding: '24px 0 0 0' }}>
-            <Text className="main-content-text" style={{ fontSize: '19px', lineHeight: '28px', fontWeight: '600', margin: '0 0 8px 0' }}>
+        {/* SEKCJA 2: INFORMACJE O KLIENCIE (Białe tło, Ciemny tekst) */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '24px 0 0 0' }}>
+          <ContentWrapper>
+            <Text style={{ fontSize: '19px', lineHeight: '28px', fontWeight: '600', color: '#111827', margin: '0 0 8px 0' }}>
               Szanowny Kliencie,
             </Text>
-            <Text className="main-content-text-secondary" style={{ fontSize: '19px', lineHeight: '30px', margin: '12px 0' }}>
+            <Text style={{ fontSize: '19px', lineHeight: '30px', color: '#4b5563', margin: '12px 0' }}>
               Z przyjemnością informujemy, że w dniu 
               <strong style={{ whiteSpace: 'nowrap' }}> 📅 {currentDate}</strong> 
               wykonaliśmy zlecone prace porządkowe miejsca spoczynku Państwa bliskich.
             </Text>
-          </Section>
+          </ContentWrapper>
+        </Section>
 
-          <Hr className="border-gray-200 hr" style={{ margin: '24px 0' }} />
+        {/* SEKCJA 3: LINIA POZIOMA */}
+        <Section style={{ backgroundColor: '#ffffff' }}>
+          <ContentWrapper>
+            <Hr style={{ margin: '24px 0', borderColor: '#e5e7eb' }} />
+          </ContentWrapper>
+        </Section>
 
-          {/* Opis prac */}
-          <Section style={{ padding: '0 0 24px 0' }}>
-            <Text className="main-content-text" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', margin: '0 0 12px 0' }}>
+        {/* SEKCJA 4: OPIS PRAC (Białe tło, Ciemny tekst) */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '0 0 24px 0' }}>
+          <ContentWrapper>
+            <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0 0 12px 0' }}>
               Zakres Wykonanych Prac
             </Text>
-            <Text className="main-content-text-secondary" style={{ fontSize: '18px', lineHeight: '30px', margin: '0' }}>
+            <Text style={{ fontSize: '18px', lineHeight: '30px', color: '#4b5563', margin: '0' }}>
               {description}
             </Text>
-          </Section>
+          </ContentWrapper>
+        </Section>
 
-          {/* Zdjęcia przed */}
-          {photoBeforeUrls.length > 0 && (
-            <Section style={{ padding: '16px 0' }}>
-              <Text className="main-content-text" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', margin: '0' }}>
+        {/* SEKCJA 5: ZDJĘCIA PRZED (Białe tło, Ciemny tekst) */}
+        {photoBeforeUrls.length > 0 && (
+          <Section style={{ backgroundColor: '#ffffff', padding: '16px 0' }}>
+            <ContentWrapper>
+              <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0' }}>
                 Przed wykonaniem usługi
               </Text>
               <Section style={{ margin: '8px 0' }}>
                 {renderImageGrid(photoBeforeUrls)}
               </Section>
-            </Section>
-          )}
+            </ContentWrapper>
+          </Section>
+        )}
 
-          {/* Zdjęcia po */}
-          {photoAfterUrls.length > 0 && (
-            <Section style={{ padding: '16px 0' }}>
-              <Text className="main-content-text" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', margin: '0' }}>
+        {/* SEKCJA 6: ZDJĘCIA PO (Białe tło, Ciemny tekst) */}
+        {photoAfterUrls.length > 0 && (
+          <Section style={{ backgroundColor: '#ffffff', padding: '16px 0' }}>
+            <ContentWrapper>
+              <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0' }}>
                 Po wykonaniu usługi
               </Text>
               <Section style={{ margin: '8px 0' }}>
                 {renderImageGrid(photoAfterUrls)}
               </Section>
-            </Section>
-          )}
+            </ContentWrapper>
+          </Section>
+        )}
 
-          {/* Opinia Google - Duży przycisk */}
-          <Section style={{ padding: '32px 0' }}>
-            <Section style={{ backgroundColor: '#f8f9fa', borderRadius: '12px', padding: '24px 32px', textAlign: 'center' }}>
-              <Text className="main-content-text" style={{ fontSize: '22px', lineHeight: '32px', fontWeight: '600', margin: '0 0 8px 0' }}>
+        {/* SEKCJA 7: OPINIA GOOGLE (ODDZIELNA SEKCJA!) (Białe tło, Ciemny tekst) */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '32px 0' }}>
+          <ContentWrapper>
+            <Section style={{ backgroundColor: '#f8f9fa', borderRadius: '12px', padding: '24px 32px', textAlign: 'center' as const }}>
+              <Text style={{ fontSize: '22px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 8px 0' }}>
                 ⭐ Podziel się swoją opinią
               </Text>
-              <Text className="main-content-text-secondary" style={{ fontSize: '18px', lineHeight: '28px', margin: '0 0 20px 0' }}>
+              <Text style={{ fontSize: '18px', lineHeight: '28px', color: '#4b5563', margin: '0 0 20px 0' }}>
                 Twoja opinia pomoże nam w doskonaleniu naszych usług.
               </Text>
               <Button
-                style={{
-                    backgroundColor: '#1a1a1a', 
-                    borderRadius: '8px', 
-                    padding: '12px 12px', 
-                    textAlign: 'center', 
-                    fontWeight: 'bold', 
-                    fontSize: '18px', 
-                    color: '#ffffff',
-                    width: '100%',
-                    display: 'block'
-                }}
+                style={opinionButtonStyle}
                 href="https://g.page/r/CYrcRTvHckvaEBM/review"
               >
                 Zostaw opinię w Google
               </Button>
             </Section>
-          </Section>
+          </ContentWrapper>
+        </Section>
 
-          <Hr className="border-gray-200 hr" />
-
-          {/* Podziękowanie */}
-          <Section style={{ padding: '24px 0' }}>
-            <Text className="main-content-text-secondary" style={{ textAlign: 'center', fontSize: '18px', lineHeight: '28px', fontStyle: 'italic', margin: '0' }}>
+        {/* SEKCJA 8: PODZIĘKOWANIE (Białe tło, Ciemny tekst) */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '0 0 24px 0' }}>
+          <ContentWrapper>
+            <Hr style={{ margin: '0 0 24px 0', borderColor: '#e5e7eb' }} />
+            <Text style={{ textAlign: 'center' as const, fontSize: '18px', lineHeight: '28px', color: '#4b5563', fontStyle: 'italic', margin: '0' }}>
               Dziękujemy za zaufanie i możliwość zadbania o miejsce pamięci Państwa bliskich.
             </Text>
-          </Section>
+          </ContentWrapper>
         </Section>
         
-        {/* STOPKA (Zawsze czarne tło i biały tekst) - Pełna szerokość */}
-        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '20px 16px', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
-          <table style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-            <Row>
-              <Column style={{ width: '60%', textAlign: 'left', verticalAlign: 'top', lineHeight: '1.8', wordWrap: 'break-word' }}>
-                <Text style={{ fontSize: '18px', color: 'inherit', fontWeight: 'bold', margin: 0 }}>CzystePomniki.pl</Text>
-                <Text style={{ margin: '8px 0 0 0', color: 'inherit', fontSize: '15px' }}>
-                  ul. Majowa 59<br />
-                  05-462 Dziechciniec<br />
-                  Tel: <Link style={{ color: 'inherit', textDecoration: 'none' }} href="tel:+48799820556">+48 799 820 556</Link><br />
-                  Email: <Link style={{ color: 'inherit', textDecoration: 'none' }} href="mailto:biuro@czystepomniki.pl">biuro@czystepomniki.pl</Link>
-                </Text>
-              </Column>
-              <Column style={{ width: '40%', textAlign: 'center', verticalAlign: 'middle' }}>
-                <Img style={{ maxWidth: '30%', height: 'auto', display: 'inline-block' }} src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp" alt="Czyste Pomniki" />
-                <Text style={{ fontSize: '12px', color: '#dddddd', marginTop: '8px' }}>Profesjonalne usługi sprzątania grobów</Text>
-              </Column>
-            </Row>
-            <Row>
-              <Column style={{ textAlign: 'center', paddingTop: '40px', borderTop: '1px solid #333333' }} colSpan={2}>
-                <Link style={{ margin: '0 15px', color: '#f2f2f2', fontWeight: 'bold', fontSize: '16px', textDecoration: 'none', fontFamily: 'Arial, sans-serif' }} href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener">FB</Link>
-                <Link style={{ margin: '0 15px', color: '#f2f2f2', fontWeight: 'bold', fontSize: '16px', textDecoration: 'none', fontFamily: 'Arial, sans-serif' }} href="https://x.com/czystepomnikipl/" rel="noopener">X</Link>
-              </Column>
-            </Row>
-          </table>
+        {/* SEKCJA 9: STOPKA (Zawsze czarne tło, biały tekst) - Pełna szerokość */}
+        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '20px 0', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
+          <ContentWrapper>
+            <table style={{ width: '100%', tableLayout: 'fixed' }}>
+              <Row>
+                <Column style={{ width: '60%', textAlign: 'left' as const, verticalAlign: 'top', lineHeight: '1.8', wordWrap: 'break-word' }}>
+                  <Text style={{ fontSize: '18px', color: 'inherit', fontWeight: 'bold', margin: 0 }}>CzystePomniki.pl</Text>
+                  <Text style={{ margin: '8px 0 0 0', color: 'inherit', fontSize: '15px' }}>
+                    ul. Majowa 59<br />
+                    05-462 Dziechciniec<br />
+                    Tel: <Link style={{ color: 'inherit', textDecoration: 'none' }} href="tel:+48799820556">+48 799 820 556</Link><br />
+                    Email: <Link style={{ color: 'inherit', textDecoration: 'none' }} href="mailto:biuro@czystepomniki.pl">biuro@czystepomniki.pl</Link>
+                  </Text>
+                </Column>
+                <Column style={{ width: '40%', textAlign: 'center' as const, verticalAlign: 'middle' }}>
+                  <Img style={{ maxWidth: '30%', height: 'auto', display: 'inline-block' }} src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp" alt="Czyste Pomniki" />
+                  <Text style={{ fontSize: '12px', color: '#dddddd', marginTop: '8px' }}>Profesjonalne usługi sprzątania grobów</Text>
+                </Column>
+              </Row>
+              <Row style={{ borderTop: '1px solid #333333', paddingTop: '40px', marginTop: '40px' }}>
+                <Column style={{ textAlign: 'center' as const }} colSpan={2}>
+                  <Link style={{ margin: '0 15px', color: '#f2f2f2', fontWeight: 'bold', fontSize: '16px', textDecoration: 'none', fontFamily: 'Arial, sans-serif' }} href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener">FB</Link>
+                  <Link style={{ margin: '0 15px', color: '#f2f2f2', fontWeight: 'bold', fontSize: '16px', textDecoration: 'none', fontFamily: 'Arial, sans-serif' }} href="https://x.com/czystepomnikipl/" rel="noopener">X</Link>
+                </Column>
+              </Row>
+            </table>
+          </ContentWrapper>
         </Section>
         
-        {/* Dół */}
+        {/* SEKCJA 10: PRAW AUTORSKICH (Jasne tło) */}
         <Section style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-          <Text style={{ textAlign: 'center', fontFamily: "'Book Antiqua', Palatino, serif", fontSize: '14pt', color: '#666', margin: '20px 0' }}>CzystePomniki 2025</Text>
+          <Text style={{ textAlign: 'center' as const, fontFamily: "'Book Antiqua', Palatino, serif", fontSize: '14pt', color: '#666', margin: '20px 0' }}>CzystePomniki 2025</Text>
         </Section>
       </Body>
     </Html>
