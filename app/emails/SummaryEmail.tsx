@@ -12,9 +12,38 @@ interface SummaryEmailProps {
 // Globalne style dla Body (zgodnie z obecnym stylem, ale z większymi czcionkami)
 const mainBodyStyle = {
   fontFamily: "'Book Antiqua', 'Palatino Linotype', Palatino, serif",
-  backgroundColor: "#f6f9fc",
-  fontSize: '18px', // Podstawowa czcionka dla czytelności
+  backgroundColor: "#f6f9fc", // Domyślne jasne tło
+  fontSize: '18px',
 };
+
+// Style dla ciemnego trybu, które zostaną wstrzyknięte do <Head>
+const darkThemeStyles = `
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #1a1a1a !important; /* Ciemne tło dla całej wiadomości */
+    }
+    .main-container {
+      background-color: #333333 !important; /* Ciemne tło dla głównego kontenera */
+      color: #f2f2f2 !important;
+    }
+    .text-gray-900 {
+      color: #f2f2f2 !important;
+    }
+    .text-gray-600 {
+      color: #cccccc !important;
+    }
+    .text-gray-500 {
+      color: #aaaaaa !important;
+    }
+    .header-bg {
+      background-color: #000000 !important; /* Bardziej widoczne tło dla sekcji logo w dark mode */
+    }
+    /* Zmiana koloru tekstu w nagłówku na jasny w dark mode */
+    .header-text-main, .header-text-sub {
+      color: #f2f2f2 !important; 
+    }
+  }
+`;
 
 export default function SummaryEmail({
   contactName,
@@ -42,22 +71,29 @@ export default function SummaryEmail({
 
   return (
     <Html>
-      <Head />
+      <Head>
+        {/* Wstrzyknięcie stylów dla trybu ciemnego */}
+        <style dangerouslySetInnerHTML={{ __html: darkThemeStyles }} />
+      </Head>
       <Body style={mainBodyStyle}>
-        <Container className="mx-auto max-w-[600px] bg-white my-[40px]">
+        <Container className="mx-auto max-w-[600px] bg-white my-[40px] main-container">
           
-          {/* Header z mniejszym logo i nagłówkiem */}
-          <Section className="bg-[#1a1a1a] px-[42px] py-[32px]">
+          {/* Header z logo i nagłówkiem */}
+          {/* Użycie 'header-bg' dla lepszej kontroli tła w dark mode */}
+          <Section className="bg-[#1a1a1a] px-[42px] py-[32px] header-bg">
             <table className="w-full">
               <tr className="w-full">
                 <td align="center">
                   <Img
                     alt="Czyste Pomniki Logo"
-                    height="60" // Zmniejszone logo
+                    height="60"
                     src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp"
                   />
-                  {/* Nagłówek h1 pod logo */}
-                  <h1 className="my-[8px] font-semibold text-[26px] text-white leading-[34px]" style={{ margin: '8px 0', fontSize: '26px', lineHeight: '34px', color: '#ffffff', fontWeight: '600' }}>
+                  {/* Domyślny kolor tekstu zmieniony na ciemny, aby był czytelny na jasnym tle (jasny tryb) */}
+                  <h1 
+                    className="my-[8px] font-semibold text-[26px] leading-[34px] header-text-main" 
+                    style={{ margin: '8px 0', fontSize: '26px', lineHeight: '34px', color: '#333333', fontWeight: '600' }}
+                  >
                     CzystePomniki.pl
                   </h1>
                 </td>
@@ -65,10 +101,16 @@ export default function SummaryEmail({
               <tr className="w-full">
                 <td align="center">
                   {/* Podsumowanie wykonanych prac */}
-                  <h1 className="my-[16px] font-semibold text-[22px] text-white leading-[32px]" style={{ margin: '16px 0', fontSize: '22px', lineHeight: '32px', color: '#ffffff', fontWeight: '600' }}>
+                  <h1 
+                    className="my-[16px] font-semibold text-[22px] leading-[32px] header-text-main" 
+                    style={{ margin: '16px 0', fontSize: '22px', lineHeight: '32px', color: '#333333', fontWeight: '600' }}
+                  >
                     Podsumowanie Wykonanych Prac
                   </h1>
-                  <Text className="mt-[4px] mb-0 text-[16px] text-gray-300 leading-[24px]" style={{ fontSize: '16px', lineHeight: '24px', color: '#d1d5db' }}>
+                  <Text 
+                    className="mt-[4px] mb-0 text-[16px] text-gray-300 leading-[24px] header-text-sub" 
+                    style={{ fontSize: '16px', lineHeight: '24px', color: '#4b5563' }}
+                  >
                     Profesjonalna pielęgnacja miejsc pamięci
                   </Text>
                 </td>
@@ -81,7 +123,6 @@ export default function SummaryEmail({
             <Text className="m-0 font-semibold text-[19px] text-gray-900 leading-[28px]" style={{ fontSize: '19px', lineHeight: '28px', color: '#111827', fontWeight: '600' }}>
               Szanowny Kliencie,
             </Text>
-            {/* Usunięto contactName */}
             <Text className="mt-[12px] text-[19px] text-gray-600 leading-[30px]" style={{ fontSize: '19px', lineHeight: '30px', color: '#4b5563' }}>
               Z przyjemnością informujemy, że w dniu 
               <strong style={{ whiteSpace: 'nowrap' }}> 📅 {currentDate}</strong> 
@@ -137,7 +178,6 @@ export default function SummaryEmail({
                 Twoja opinia pomoże nam w doskonaleniu naszych usług.
               </Text>
               <Button
-                // Dostosowanie do pełnej szerokości i widocznego koloru/stylu
                 className="box-border w-full rounded-[8px] bg-[#1a1a1a] px-[12px] py-[12px] text-center font-bold text-[18px] text-white"
                 style={{
                     backgroundColor: '#1a1a1a', 
@@ -168,7 +208,7 @@ export default function SummaryEmail({
             </Text>
           </Section>
 
-          {/* Footer */}
+          {/* Footer (został zachowany jako ciemny, jest czytelny) */}
           <Section style={{ width: '100%', backgroundColor: '#1a1a1a', fontFamily: "'Book Antiqua', serif", fontSize: '14px', color: '#f2f2f2', padding: '20px 10px', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px', overflowWrap: 'break-word', marginLeft: 'auto', marginRight: 'auto' }}>
             <Row>
               <Column style={{ width: '60%', textAlign: 'left', verticalAlign: 'top', lineHeight: '1.8', wordWrap: 'break-word' }}>
