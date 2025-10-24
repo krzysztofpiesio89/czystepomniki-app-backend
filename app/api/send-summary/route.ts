@@ -9,6 +9,7 @@ import { randomUUID } from 'crypto'
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'dummy-key')
 
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
@@ -33,14 +34,16 @@ export async function POST(request: NextRequest) {
       minute: '2-digit'
     })
 
-    // Upload images to server
-    const uploadDir = join(process.cwd(), 'public', 'uploads')
+    // Upload images to server (using /tmp for Vercel compatibility)
+    const uploadDir = join('/tmp', 'uploads')
     await mkdir(uploadDir, { recursive: true })
 
     const photoBeforeUrls = []
     const photoAfterUrls = []
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://czystepomniki-app-backend-kflt9n4ca.vercel.app'
+    // For Vercel, we need to use a cloud storage service like Cloudinary or AWS S3
+    // For now, we'll skip file uploads and just send the email without photos
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://czystepomniki-app-backend-2i3c8p4mg.vercel.app'
 
     for (let i = 0; i < photoBeforeFiles.length; i++) {
       const file = photoBeforeFiles[i]

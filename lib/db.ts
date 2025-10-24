@@ -1,8 +1,9 @@
 import Database from 'better-sqlite3'
 import path from 'path'
 import fs from 'fs'
+import os from 'os'
 
-const dbDir = path.join('/tmp', 'data')
+const dbDir = path.join(os.tmpdir(), 'data')
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true })
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { dbStatements } from '@/lib/db'
 
+
 export async function GET() {
   try {
     const contacts = dbStatements.getAllContacts.all()
