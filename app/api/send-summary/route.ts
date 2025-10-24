@@ -17,9 +17,23 @@ export async function POST(request: NextRequest) {
     const email = formData.get('email') as string
     const description = formData.get('description') as string
 
-    // Get photo files
-    const photoBeforeFiles = formData.getAll('photoBefore_0') as File[]
-    const photoAfterFiles = formData.getAll('photoAfter_0') as File[]
+    // Get photo files - collect all files with different indices
+    const photoBeforeFiles: File[] = []
+    const photoAfterFiles: File[] = []
+
+    // Collect all photoBefore files
+    for (let i = 0; ; i++) {
+      const files = formData.getAll(`photoBefore_${i}`) as File[]
+      if (files.length === 0) break
+      photoBeforeFiles.push(...files)
+    }
+
+    // Collect all photoAfter files
+    for (let i = 0; ; i++) {
+      const files = formData.getAll(`photoAfter_${i}`) as File[]
+      if (files.length === 0) break
+      photoAfterFiles.push(...files)
+    }
 
     // For now, we'll send a simple email without attachments
     // In a real implementation, you'd upload files to a storage service first
@@ -62,11 +76,37 @@ export async function POST(request: NextRequest) {
       })
     )
 
+    // Prepare attachments from uploaded photos
+    const attachments = []
+
+    // Add before photos as attachments
+    for (let i = 0; i < photoBeforeFiles.length; i++) {
+      const file = photoBeforeFiles[i]
+      const buffer = Buffer.from(await file.arrayBuffer())
+      attachments.push({
+        filename: `zdjecie-przed-${i + 1}.jpg`,
+        content: buffer,
+        contentType: file.type || 'image/jpeg'
+      })
+    }
+
+    // Add after photos as attachments
+    for (let i = 0; i < photoAfterFiles.length; i++) {
+      const file = photoAfterFiles[i]
+      const buffer = Buffer.from(await file.arrayBuffer())
+      attachments.push({
+        filename: `zdjecie-po-${i + 1}.jpg`,
+        content: buffer,
+        contentType: file.type || 'image/jpeg'
+      })
+    }
+
     const { data, error } = await resend.emails.send({
       from: 'Czyste Pomniki <podsumowanie@posprzatamy-grob.pl>',
       to: email,
       subject: `Podsumowanie prac - ${contactName}`,
-      html
+      html,
+      attachments
     })
 
     if (error) {
