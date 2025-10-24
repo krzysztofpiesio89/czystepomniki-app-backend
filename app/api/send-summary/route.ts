@@ -34,15 +34,15 @@ export async function POST(request: NextRequest) {
       minute: '2-digit'
     })
 
-    // Upload images to server (using /tmp for Vercel compatibility)
-    const uploadDir = join('/tmp', 'uploads')
+    // Upload images to server (using os.tmpdir() for cross-platform compatibility)
+    const uploadDir = join(process.env.TMPDIR || '/tmp', 'uploads')
     await mkdir(uploadDir, { recursive: true })
 
     const photoBeforeUrls = []
     const photoAfterUrls = []
 
     // For Vercel, we need to use a cloud storage service like Cloudinary or AWS S3
-    // For now, we'll skip file uploads and just send the email without photos
+    // For now, we'll upload to Vercel's /tmp and serve via API route
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://czystepomniki-app-backend-2i3c8p4mg.vercel.app'
 
     for (let i = 0; i < photoBeforeFiles.length; i++) {
