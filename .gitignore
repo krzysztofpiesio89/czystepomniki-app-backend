@@ -66,3 +66,6 @@ Thumbs.db
 
 # Vercel
 .vercel
+
+# Uploaded images
+public/uploads/
