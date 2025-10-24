@@ -5,10 +5,10 @@ import { stat } from 'fs/promises'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
-    const filename = params.filename
+    const { filename } = await params
     const uploadDir = join(process.env.TMPDIR || '/tmp', 'uploads')
     const filePath = join(uploadDir, filename)
 
