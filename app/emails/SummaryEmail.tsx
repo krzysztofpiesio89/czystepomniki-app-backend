@@ -19,6 +19,7 @@ const mainBodyStyle = {
 // Style dla ciemnego trybu, które zostaną wstrzyknięte do <Head>
 const darkThemeStyles = `
   @media (prefers-color-scheme: dark) {
+    /* Ustawienia tła i głównego kontenera */
     body {
       background-color: #1a1a1a !important; /* Ciemne tło dla całej wiadomości */
     }
@@ -26,21 +27,33 @@ const darkThemeStyles = `
       background-color: #333333 !important; /* Ciemne tło dla głównego kontenera */
       color: #f2f2f2 !important;
     }
-    .text-gray-900 {
-      color: #f2f2f2 !important;
+    
+    /* Zmiana koloru tekstu na jasny w trybie ciemnym */
+    .dark-text-main {
+      color: #f2f2f2 !important; /* Bardzo jasny tekst dla nagłówków i kluczowej treści */
     }
-    .text-gray-600 {
-      color: #cccccc !important;
+    .dark-text-secondary {
+      color: #cccccc !important; /* Lekko ciemniejszy jasny tekst dla reszty treści */
     }
-    .text-gray-500 {
-      color: #aaaaaa !important;
+    .dark-text-muted {
+      color: #aaaaaa !important; /* Delikatny jasny tekst */
     }
     .header-bg {
       background-color: #000000 !important; /* Bardziej widoczne tło dla sekcji logo w dark mode */
     }
-    /* Zmiana koloru tekstu w nagłówku na jasny w dark mode */
-    .header-text-main, .header-text-sub {
-      color: #f2f2f2 !important; 
+    .hr {
+      border-color: #555555 !important; /* Jasna linia pozioma */
+    }
+
+    /* Nadpisanie klas tekstowych Tailwind w sekcjach, które ich używają */
+    .text-gray-900 {
+        color: #f2f2f2 !important;
+    }
+    .text-gray-600 {
+        color: #cccccc !important;
+    }
+    .text-gray-500 {
+        color: #aaaaaa !important;
     }
   }
 `;
@@ -76,10 +89,10 @@ export default function SummaryEmail({
         <style dangerouslySetInnerHTML={{ __html: darkThemeStyles }} />
       </Head>
       <Body style={mainBodyStyle}>
+        {/* Dodano klasę 'main-container' do Container */}
         <Container className="mx-auto max-w-[600px] bg-white my-[40px] main-container">
           
           {/* Header z logo i nagłówkiem */}
-          {/* Użycie 'header-bg' dla lepszej kontroli tła w dark mode */}
           <Section className="bg-[#1a1a1a] px-[42px] py-[32px] header-bg">
             <table className="w-full">
               <tr className="w-full">
@@ -89,9 +102,9 @@ export default function SummaryEmail({
                     height="60"
                     src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp"
                   />
-                  {/* Domyślny kolor tekstu zmieniony na ciemny, aby był czytelny na jasnym tle (jasny tryb) */}
+                  {/* Użyto stylu inline dla trybu jasnego i klasy dark-text-main dla trybu ciemnego */}
                   <h1 
-                    className="my-[8px] font-semibold text-[26px] leading-[34px] header-text-main" 
+                    className="my-[8px] font-semibold text-[26px] leading-[34px] dark-text-main" 
                     style={{ margin: '8px 0', fontSize: '26px', lineHeight: '34px', color: '#333333', fontWeight: '600' }}
                   >
                     CzystePomniki.pl
@@ -102,13 +115,13 @@ export default function SummaryEmail({
                 <td align="center">
                   {/* Podsumowanie wykonanych prac */}
                   <h1 
-                    className="my-[16px] font-semibold text-[22px] leading-[32px] header-text-main" 
+                    className="my-[16px] font-semibold text-[22px] leading-[32px] dark-text-main" 
                     style={{ margin: '16px 0', fontSize: '22px', lineHeight: '32px', color: '#333333', fontWeight: '600' }}
                   >
                     Podsumowanie Wykonanych Prac
                   </h1>
                   <Text 
-                    className="mt-[4px] mb-0 text-[16px] text-gray-300 leading-[24px] header-text-sub" 
+                    className="mt-[4px] mb-0 text-[16px] text-gray-300 leading-[24px] dark-text-muted" 
                     style={{ fontSize: '16px', lineHeight: '24px', color: '#4b5563' }}
                   >
                     Profesjonalna pielęgnacja miejsc pamięci
@@ -131,7 +144,8 @@ export default function SummaryEmail({
           </Section>
 
           <Section className="px-[42px]">
-            <Hr className="border-gray-200" />
+            {/* Dodano klasę 'hr' dla kontroli w dark mode */}
+            <Hr className="border-gray-200 hr" />
           </Section>
 
           {/* Opis prac */}
@@ -198,7 +212,7 @@ export default function SummaryEmail({
           </Section>
 
           <Section className="px-[42px]">
-            <Hr className="border-gray-200" />
+            <Hr className="border-gray-200 hr" />
           </Section>
 
           {/* Podziękowanie */}
@@ -208,7 +222,7 @@ export default function SummaryEmail({
             </Text>
           </Section>
 
-          {/* Footer (został zachowany jako ciemny, jest czytelny) */}
+          {/* Footer (zachowany jako ciemny, jest czytelny) */}
           <Section style={{ width: '100%', backgroundColor: '#1a1a1a', fontFamily: "'Book Antiqua', serif", fontSize: '14px', color: '#f2f2f2', padding: '20px 10px', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px', overflowWrap: 'break-word', marginLeft: 'auto', marginRight: 'auto' }}>
             <Row>
               <Column style={{ width: '60%', textAlign: 'left', verticalAlign: 'top', lineHeight: '1.8', wordWrap: 'break-word' }}>
