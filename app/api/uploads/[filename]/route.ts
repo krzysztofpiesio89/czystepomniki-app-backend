@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFile } from 'fs/promises'
-import { join } from 'path'
-import { stat } from 'fs/promises'
+import { put, head } from '@vercel/blob'
 
 export async function GET(
   request: NextRequest,
@@ -9,39 +7,46 @@ export async function GET(
 ) {
   try {
     const { filename } = await params
-    const uploadDir = join(process.env.TMPDIR || '/tmp', 'uploads')
-    const filePath = join(uploadDir, filename)
 
-    // Check if file exists
+    // For Vercel Blob, we need to construct the URL
+    // Using the actual blob store URL with store ID
+    const blobUrl = `https://store_CAoDvxA51Kd92JXy.public.blob.vercel-storage.com/${filename}`
+
+    // Check if blob exists
     try {
-      await stat(filePath)
+      await head(blobUrl)
     } catch {
       return NextResponse.json({ error: 'File not found' }, { status: 404 })
     }
 
-    // Read file
-    const fileBuffer = await readFile(filePath)
-
-    // Determine content type based on file extension
-    const ext = filename.split('.').pop()?.toLowerCase()
-    let contentType = 'application/octet-stream'
-
-    if (ext === 'jpg' || ext === 'jpeg') {
-      contentType = 'image/jpeg'
-    } else if (ext === 'png') {
-      contentType = 'image/png'
-    } else if (ext === 'gif') {
-      contentType = 'image/gif'
-    }
-
-    return new NextResponse(fileBuffer, {
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=31536000', // Cache for 1 year
-      },
-    })
+    // Redirect to the blob URL
+    return NextResponse.redirect(blobUrl)
   } catch (error) {
     console.error('Error serving file:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const filename = searchParams.get('filename')
+
+    if (!filename) {
+      return NextResponse.json({ error: 'Filename is required' }, { status: 400 })
+    }
+
+    // Upload to Vercel Blob using request.body for App Router
+    const blob = await put(filename, request.body!, {
+      access: 'public',
+    })
+
+    return NextResponse.json(blob)
+  } catch (error) {
+    console.error('Error uploading file:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
