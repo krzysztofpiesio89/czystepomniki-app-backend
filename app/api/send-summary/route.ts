@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const photoBeforeUrls = []
     const photoAfterUrls = []
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://czystepomniki-app-backend-1aeufh0df.vercel.app'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://czystepomniki-app-backend-kflt9n4ca.vercel.app'
 
     for (let i = 0; i < photoBeforeFiles.length; i++) {
       const file = photoBeforeFiles[i]
