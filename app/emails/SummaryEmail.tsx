@@ -1,4 +1,4 @@
-import { Section, Row, Text, Column, Img, Link, Html, Head, Body, Container, Hr, Button } from "@react-email/components";
+import { Section, Row, Text, Column, Img, Link, Html, Head, Body, Hr, Button } from "@react-email/components";
 
 interface SummaryEmailProps {
   contactName: string;
@@ -16,38 +16,34 @@ const mainBodyStyle = {
   fontSize: '18px',
 };
 
-// Style dla ciemnego trybu i reguły dla jasnego trybu
+// Style dla trybu ciemnego i reguły ogólne
 const finalThemeStyles = `
-  /* Globalne style dla domyślnego (jasnego) trybu */
+  /* Reset koloru tekstu w trybie jasnym, aby uniknąć szarości z tailwind */
   .main-content-text {
     color: #111827 !important; /* Domyślny, ciemny kolor tekstu dla głównej treści */
   }
   .main-content-text-secondary {
     color: #4b5563 !important; /* Domyślny, ciemniejszy szary dla reszty treści */
   }
-  .main-container {
+  .main-content-bg {
     background-color: #ffffff !important;
   }
   
-  /* MEDIA QUERY DLA TRYBU CIEMNEGO */
+  /* Media Query dla Trybu Ciemnego */
   @media (prefers-color-scheme: dark) {
-    /* Ustawienia tła i głównego kontenera */
     body {
       background-color: #1a1a1a !important; 
     }
-    .main-container {
-      background-color: #222222 !important; /* Ciemne tło dla głównego kontenera */
+    .main-content-bg {
+      background-color: #222222 !important; /* Ciemne tło dla głównej treści */
     }
     
     /* Zmiana koloru tekstu na jasny w trybie ciemnym */
-    .main-content-text, .header-text-main {
-      color: #f2f2f2 !important; /* Bardzo jasny tekst dla nagłówków i kluczowej treści */
+    .main-content-text {
+      color: #f2f2f2 !important; 
     }
-    .main-content-text-secondary, .header-text-sub {
-      color: #cccccc !important; /* Jasny tekst dla reszty treści */
-    }
-    .header-bg {
-      background-color: #000000 !important; /* Ciemne tło dla sekcji logo */
+    .main-content-text-secondary {
+      color: #cccccc !important; 
     }
     .hr {
       border-color: #555555 !important;
@@ -82,84 +78,79 @@ export default function SummaryEmail({
   return (
     <Html>
       <Head>
-        {/* Wstrzyknięcie stylów dla obu trybów */}
         <style dangerouslySetInnerHTML={{ __html: finalThemeStyles }} />
       </Head>
       <Body style={mainBodyStyle}>
-        {/* Klasa 'main-container' dla kontroli tła */}
-        <Container className="mx-auto max-w-[600px] bg-white my-[40px] main-container">
-          
-          {/* Header z logo i nagłówkiem */}
-          <Section className="bg-[#1a1a1a] px-[42px] py-[32px] header-bg">
-            <table className="w-full">
-              <tr className="w-full">
-                <td align="center">
-                  <Img
-                    alt="Czyste Pomniki Logo"
-                    height="60"
-                    src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp"
-                  />
-                  {/* Nagłówek h1 - domyślnie ciemny, zmieniany na jasny w Dark Mode przez klasę header-text-main */}
-                  <h1 
-                    className="my-[8px] font-semibold text-[26px] leading-[34px] header-text-main" 
-                    style={{ margin: '8px 0', fontSize: '26px', lineHeight: '34px', color: '#333333', fontWeight: '600' }}
-                  >
-                    CzystePomniki.pl
-                  </h1>
-                </td>
-              </tr>
-              <tr className="w-full">
-                <td align="center">
-                  <h1 
-                    className="my-[16px] font-semibold text-[22px] leading-[32px] header-text-main" 
-                    style={{ margin: '16px 0', fontSize: '22px', lineHeight: '32px', color: '#333333', fontWeight: '600' }}
-                  >
-                    Podsumowanie Wykonanych Prac
-                  </h1>
-                  <Text 
-                    className="mt-[4px] mb-0 text-[16px] text-gray-300 leading-[24px] header-text-sub" 
-                    style={{ fontSize: '16px', lineHeight: '24px', color: '#4b5563' }}
-                  >
-                    Profesjonalna pielęgnacja miejsc pamięci
-                  </Text>
-                </td>
-              </tr>
-            </table>
-          </Section>
+        
+        {/* NAGŁÓWEK (Zawsze czarne tło i biały tekst) - Pełna szerokość */}
+        {/* Style inline zapewniają, że tło i tekst są zawsze czarne/białe, niezależnie od trybu dark mode */}
+        <Section style={{ width: '100%', backgroundColor: '#000000', padding: '32px 16px' }}>
+          <table style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+            <tr>
+              <td align="center">
+                <Img
+                  alt="Czyste Pomniki Logo"
+                  height="60"
+                  src="https://www.czystepomniki.pl/wp-content/uploads/2022/09/cropped-logo_red.webp"
+                />
+                <h1 
+                  style={{ margin: '8px 0', fontSize: '26px', lineHeight: '34px', color: '#ffffff', fontWeight: '600' }}
+                >
+                  CzystePomniki.pl
+                </h1>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <h1 
+                  style={{ margin: '16px 0', fontSize: '22px', lineHeight: '32px', color: '#ffffff', fontWeight: '600' }}
+                >
+                  Podsumowanie Wykonanych Prac
+                </h1>
+                <Text 
+                  style={{ fontSize: '16px', lineHeight: '24px', color: '#dddddd' }}
+                >
+                  Profesjonalna pielęgnacja miejsc pamięci
+                </Text>
+              </td>
+            </tr>
+          </table>
+        </Section>
+
+        {/* GŁÓWNA TREŚĆ - Kontener wyśrodkowany z minimalnym paddingiem */}
+        <Section className="main-content-bg" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: '0 16px' }}>
 
           {/* Informacje o kliencie - Szanowny Kliencie */}
-          <Section className="px-[42px] py-[24px]">
-            <Text className="m-0 font-semibold text-[19px] main-content-text leading-[28px]" style={{ fontSize: '19px', lineHeight: '28px', fontWeight: '600' }}>
+          <Section style={{ padding: '24px 0 0 0' }}>
+            <Text className="main-content-text" style={{ fontSize: '19px', lineHeight: '28px', fontWeight: '600', margin: '0 0 8px 0' }}>
               Szanowny Kliencie,
             </Text>
-            <Text className="mt-[12px] text-[19px] main-content-text-secondary leading-[30px]" style={{ fontSize: '19px', lineHeight: '30px' }}>
+            <Text className="main-content-text-secondary" style={{ fontSize: '19px', lineHeight: '30px', margin: '12px 0' }}>
               Z przyjemnością informujemy, że w dniu 
               <strong style={{ whiteSpace: 'nowrap' }}> 📅 {currentDate}</strong> 
               wykonaliśmy zlecone prace porządkowe miejsca spoczynku Państwa bliskich.
             </Text>
           </Section>
 
-          <Section className="px-[42px]">
-            <Hr className="border-gray-200 hr" />
-          </Section>
+          <Hr className="border-gray-200 hr" style={{ margin: '24px 0' }} />
 
           {/* Opis prac */}
-          <Section className="px-[42px] py-[24px]">
-            <Text className="m-0 font-semibold text-[20px] main-content-text leading-[30px]" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600' }}>
+          <Section style={{ padding: '0 0 24px 0' }}>
+            <Text className="main-content-text" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', margin: '0 0 12px 0' }}>
               Zakres Wykonanych Prac
             </Text>
-            <Text className="mt-[12px] text-[18px] main-content-text-secondary leading-[30px]" style={{ fontSize: '18px', lineHeight: '30px' }}>
+            <Text className="main-content-text-secondary" style={{ fontSize: '18px', lineHeight: '30px', margin: '0' }}>
               {description}
             </Text>
           </Section>
 
           {/* Zdjęcia przed */}
           {photoBeforeUrls.length > 0 && (
-            <Section className="px-[42px] py-[16px]">
-              <Text className="m-0 font-semibold text-[20px] main-content-text leading-[30px]" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600' }}>
+            <Section style={{ padding: '16px 0' }}>
+              <Text className="main-content-text" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', margin: '0' }}>
                 Przed wykonaniem usługi
               </Text>
-              <Section className="mt-[8px]">
+              <Section style={{ margin: '8px 0' }}>
                 {renderImageGrid(photoBeforeUrls)}
               </Section>
             </Section>
@@ -167,27 +158,26 @@ export default function SummaryEmail({
 
           {/* Zdjęcia po */}
           {photoAfterUrls.length > 0 && (
-            <Section className="px-[42px] py-[16px]">
-              <Text className="m-0 font-semibold text-[20px] main-content-text leading-[30px]" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600' }}>
+            <Section style={{ padding: '16px 0' }}>
+              <Text className="main-content-text" style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', margin: '0' }}>
                 Po wykonaniu usługi
               </Text>
-              <Section className="mt-[8px]">
+              <Section style={{ margin: '8px 0' }}>
                 {renderImageGrid(photoAfterUrls)}
               </Section>
             </Section>
           )}
 
           {/* Opinia Google - Duży przycisk */}
-          <Section className="px-[42px] py-[32px]">
-            <Section className="bg-[#f8f9fa] rounded-[12px] px-[32px] py-[24px] text-center">
-              <Text className="m-0 font-semibold text-[22px] main-content-text leading-[32px]" style={{ fontSize: '22px', lineHeight: '32px', fontWeight: '600' }}>
+          <Section style={{ padding: '32px 0' }}>
+            <Section style={{ backgroundColor: '#f8f9fa', borderRadius: '12px', padding: '24px 32px', textAlign: 'center' }}>
+              <Text className="main-content-text" style={{ fontSize: '22px', lineHeight: '32px', fontWeight: '600', margin: '0 0 8px 0' }}>
                 ⭐ Podziel się swoją opinią
               </Text>
-              <Text className="mt-[8px] mb-[20px] text-[18px] main-content-text-secondary leading-[28px]" style={{ fontSize: '18px', lineHeight: '28px' }}>
+              <Text className="main-content-text-secondary" style={{ fontSize: '18px', lineHeight: '28px', margin: '0 0 20px 0' }}>
                 Twoja opinia pomoże nam w doskonaleniu naszych usług.
               </Text>
               <Button
-                className="box-border w-full rounded-[8px] bg-[#1a1a1a] px-[12px] py-[12px] text-center font-bold text-[18px] text-white"
                 style={{
                     backgroundColor: '#1a1a1a', 
                     borderRadius: '8px', 
@@ -201,24 +191,24 @@ export default function SummaryEmail({
                 }}
                 href="https://g.page/r/CYrcRTvHckvaEBM/review"
               >
-                Zostaw opinię na Google
+                Zostaw opinię w Google
               </Button>
             </Section>
           </Section>
 
-          <Section className="px-[42px]">
-            <Hr className="border-gray-200 hr" />
-          </Section>
+          <Hr className="border-gray-200 hr" />
 
           {/* Podziękowanie */}
-          <Section className="px-[42px] py-[24px]">
-            <Text className="text-center text-[18px] main-content-text-secondary leading-[28px] italic" style={{ fontSize: '18px', lineHeight: '28px', fontStyle: 'italic' }}>
+          <Section style={{ padding: '24px 0' }}>
+            <Text className="main-content-text-secondary" style={{ textAlign: 'center', fontSize: '18px', lineHeight: '28px', fontStyle: 'italic', margin: '0' }}>
               Dziękujemy za zaufanie i możliwość zadbania o miejsce pamięci Państwa bliskich.
             </Text>
           </Section>
-
-          {/* Footer (zachowany jako ciemny, jest czytelny) */}
-          <Section style={{ width: '100%', backgroundColor: '#1a1a1a', fontFamily: "'Book Antiqua', serif", fontSize: '14px', color: '#f2f2f2', padding: '20px 10px', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px', overflowWrap: 'break-word', marginLeft: 'auto', marginRight: 'auto' }}>
+        </Section>
+        
+        {/* STOPKA (Zawsze czarne tło i biały tekst) - Pełna szerokość */}
+        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '20px 16px', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
+          <table style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
             <Row>
               <Column style={{ width: '60%', textAlign: 'left', verticalAlign: 'top', lineHeight: '1.8', wordWrap: 'break-word' }}>
                 <Text style={{ fontSize: '18px', color: 'inherit', fontWeight: 'bold', margin: 0 }}>CzystePomniki.pl</Text>
@@ -240,9 +230,13 @@ export default function SummaryEmail({
                 <Link style={{ margin: '0 15px', color: '#f2f2f2', fontWeight: 'bold', fontSize: '16px', textDecoration: 'none', fontFamily: 'Arial, sans-serif' }} href="https://x.com/czystepomnikipl/" rel="noopener">X</Link>
               </Column>
             </Row>
-          </Section>
+          </table>
+        </Section>
+        
+        {/* Dół */}
+        <Section style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
           <Text style={{ textAlign: 'center', fontFamily: "'Book Antiqua', Palatino, serif", fontSize: '14pt', color: '#666', margin: '20px 0' }}>CzystePomniki 2025</Text>
-        </Container>
+        </Section>
       </Body>
     </Html>
   );
