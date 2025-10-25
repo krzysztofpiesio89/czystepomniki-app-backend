@@ -2,6 +2,14 @@
 const nextConfig = {
   // Next.js 15 już domyślnie używa app directory
 
+  // Environment variables for production (Vercel)
+  env: {
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
+  },
+
   // Allow CORS for Quasar frontend and mobile apps
   async headers() {
     return [

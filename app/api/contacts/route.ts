@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { name, email, phone, notes } = body
+    const { name, email, phone, notes, googlePlusCode } = body
 
     // Validate required fields
     if (!name || !email) {
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     // Insert new contact
     try {
-      const result = dbStatements.insertContact.run(name, email, phone || '', notes || '')
+      const result = dbStatements.insertContact.run(name, email, phone || '', notes || '', googlePlusCode || '')
 
       return NextResponse.json(
         {
@@ -65,7 +65,8 @@ export async function POST(request: NextRequest) {
           name,
           email,
           phone: phone || '',
-          notes: notes || ''
+          notes: notes || '',
+          googlePlusCode: googlePlusCode || ''
         },
         { status: 201 }
       )

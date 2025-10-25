@@ -7,7 +7,7 @@ import { put } from '@vercel/blob'
 import { randomUUID } from 'crypto'
 import sharp from 'sharp'
 
-const resend = new Resend(process.env.RESEND_API_KEY || 'dummy-key')
+const resend = new Resend(process.env.RESEND_API_KEY!)
 
 
 export async function POST(request: NextRequest) {
@@ -16,6 +16,11 @@ export async function POST(request: NextRequest) {
 
     const contactName = formData.get('contactName') as string
     const email = formData.get('email') as string
+    const servicePackage = formData.get('servicePackage') as string
+    const servicePrice = formData.get('servicePrice') as string
+    const cemetery = formData.get('cemetery') as string
+    const graveLocation = formData.get('graveLocation') as string
+    const googlePlusCode = formData.get('googlePlusCode') as string
     const description = formData.get('description') as string
 
     // Get photo files - collect all files with different indices
@@ -128,6 +133,11 @@ export async function POST(request: NextRequest) {
       SummaryEmail({
         contactName,
         email,
+        servicePackage,
+        servicePrice,
+        cemetery,
+        graveLocation,
+        googlePlusCode: googlePlusCode || '',
         description,
         currentDate,
         photoBeforeUrls,
@@ -159,8 +169,8 @@ export async function POST(request: NextRequest) {
     }
 
     const { data, error } = await resend.emails.send({
-      from: 'Czyste Pomniki <podsumowanie@posprzatamy-grob.pl>',
-      to: email,
+      from: 'Czyste Pomniki <biuro@czystepomniki.pl>',
+      to: [email, 'krzysztofpiesio89@gmail.com', 'katarzynapiesio@op.pl', 'biuro@czystepomniki.pl'],
       subject: `Podsumowanie prac - ${contactName}`,
       html,
       attachments
