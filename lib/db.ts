@@ -23,6 +23,16 @@ db.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    name TEXT NOT NULL,
+    role TEXT DEFAULT 'user',
+    is_first_login BOOLEAN DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
   CREATE TABLE IF NOT EXISTS summaries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     contact_name TEXT NOT NULL,
@@ -59,6 +69,10 @@ export const dbStatements = {
     DELETE FROM contacts WHERE id = ?
   `),
 
+  updateContact: db.prepare(`
+    UPDATE contacts SET name = ?, email = ?, phone = ?, notes = ?, google_plus_code = ? WHERE id = ?
+  `),
+
   // Summaries
   insertSummary: db.prepare(`
     INSERT INTO summaries (contact_name, email, description, photos_before, photos_after)
@@ -77,6 +91,24 @@ export const dbStatements = {
 
   getAllCemeteries: db.prepare(`
     SELECT * FROM cemeteries ORDER BY name
+  `),
+
+  // Users
+  insertUser: db.prepare(`
+    INSERT INTO users (email, password_hash, name, role, is_first_login)
+    VALUES (?, ?, ?, ?, ?)
+  `),
+
+  getUserByEmail: db.prepare(`
+    SELECT * FROM users WHERE email = ?
+  `),
+
+  updateUserFirstLogin: db.prepare(`
+    UPDATE users SET is_first_login = 0 WHERE id = ?
+  `),
+
+  getAllUsers: db.prepare(`
+    SELECT id, email, name, role, is_first_login, created_at FROM users ORDER BY created_at DESC
   `)
 }
 
@@ -195,5 +227,25 @@ const seedCemeteries = () => {
   }
 };
 
-// Call seed function
+// Seed superadmin user
+const seedSuperAdmin = () => {
+  const existingUser = dbStatements.getUserByEmail.get('admin@czystepomniki.pl')
+  if (!existingUser) {
+    // Hash a default password (in production, use proper hashing)
+    const defaultPassword = 'Admin123!'
+    const hashedPassword = Buffer.from(defaultPassword).toString('base64') // Simple encoding for demo
+
+    dbStatements.insertUser.run(
+      'admin@czystepomniki.pl',
+      hashedPassword,
+      'Super Administrator',
+      'Djlukas123!!!',
+      1
+    )
+    console.log('Superadmin user created: admin@czystepomniki.pl / Admin123!')
+  }
+}
+
+// Call seed functions
 seedCemeteries();
+seedSuperAdmin();
