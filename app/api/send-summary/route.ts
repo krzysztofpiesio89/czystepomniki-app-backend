@@ -5,6 +5,7 @@ import { render } from '@react-email/render'
 import SummaryEmail from '@/app/emails/SummaryEmail'
 import { put } from '@vercel/blob'
 import { randomUUID } from 'crypto'
+import sharp from 'sharp'
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'dummy-key')
 
@@ -35,6 +36,64 @@ export async function POST(request: NextRequest) {
       photoAfterFiles.push(...files)
     }
 
+    // Check total upload size (max 50MB = 52428800 bytes)
+    const totalSize = [...photoBeforeFiles, ...photoAfterFiles].reduce((sum, file) => sum + file.size, 0)
+    if (totalSize > 52428800) {
+      return NextResponse.json(
+        { error: 'Total upload size exceeds 50MB limit' },
+        { status: 400 }
+      )
+    }
+
+    // Compress images to max 300kb each
+    const compressImage = async (file: File): Promise<Buffer> => {
+      const buffer = Buffer.from(await file.arrayBuffer())
+      const maxSizeBytes = 307200 // 300kb
+
+      // If already under limit, return as is
+      if (buffer.length <= maxSizeBytes) {
+        return buffer
+      }
+
+      // Compress with Sharp
+      let quality = 80
+      let compressed = await sharp(buffer)
+        .jpeg({ quality })
+        .toBuffer()
+
+      // Reduce quality until under limit
+      while (compressed.length > maxSizeBytes && quality > 10) {
+        quality -= 10
+        compressed = await sharp(buffer)
+          .jpeg({ quality })
+          .toBuffer()
+      }
+
+      // If still too big, resize
+      if (compressed.length > maxSizeBytes) {
+        compressed = await sharp(buffer)
+          .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
+          .jpeg({ quality: 70 })
+          .toBuffer()
+      }
+
+      return compressed
+    }
+
+    // Compress all photoBefore files
+    const compressedPhotoBeforeFiles: Buffer[] = []
+    for (const file of photoBeforeFiles) {
+      const compressed = await compressImage(file)
+      compressedPhotoBeforeFiles.push(compressed)
+    }
+
+    // Compress all photoAfter files
+    const compressedPhotoAfterFiles: Buffer[] = []
+    for (const file of photoAfterFiles) {
+      const compressed = await compressImage(file)
+      compressedPhotoAfterFiles.push(compressed)
+    }
+
     // For now, we'll send a simple email without attachments
     // In a real implementation, you'd upload files to a storage service first
 
@@ -50,18 +109,18 @@ export async function POST(request: NextRequest) {
     const photoBeforeUrls = []
     const photoAfterUrls = []
 
-    // Upload images to Vercel Blob Storage
-    for (let i = 0; i < photoBeforeFiles.length; i++) {
-      const file = photoBeforeFiles[i]
+    // Upload compressed images to Vercel Blob Storage
+    for (let i = 0; i < compressedPhotoBeforeFiles.length; i++) {
+      const buffer = compressedPhotoBeforeFiles[i]
       const fileName = `przed-${randomUUID()}.jpg`
-      const blob = await put(fileName, file, { access: 'public' })
+      const blob = await put(fileName, buffer, { access: 'public' })
       photoBeforeUrls.push(blob.url)
     }
 
-    for (let i = 0; i < photoAfterFiles.length; i++) {
-      const file = photoAfterFiles[i]
+    for (let i = 0; i < compressedPhotoAfterFiles.length; i++) {
+      const buffer = compressedPhotoAfterFiles[i]
       const fileName = `po-${randomUUID()}.jpg`
-      const blob = await put(fileName, file, { access: 'public' })
+      const blob = await put(fileName, buffer, { access: 'public' })
       photoAfterUrls.push(blob.url)
     }
 
@@ -76,28 +135,26 @@ export async function POST(request: NextRequest) {
       })
     )
 
-    // Prepare attachments from uploaded photos
+    // Prepare attachments from compressed photos
     const attachments = []
 
     // Add before photos as attachments
-    for (let i = 0; i < photoBeforeFiles.length; i++) {
-      const file = photoBeforeFiles[i]
-      const buffer = Buffer.from(await file.arrayBuffer())
+    for (let i = 0; i < compressedPhotoBeforeFiles.length; i++) {
+      const buffer = compressedPhotoBeforeFiles[i]
       attachments.push({
         filename: `zdjecie-przed-${i + 1}.jpg`,
         content: buffer,
-        contentType: file.type || 'image/jpeg'
+        contentType: 'image/jpeg'
       })
     }
 
     // Add after photos as attachments
-    for (let i = 0; i < photoAfterFiles.length; i++) {
-      const file = photoAfterFiles[i]
-      const buffer = Buffer.from(await file.arrayBuffer())
+    for (let i = 0; i < compressedPhotoAfterFiles.length; i++) {
+      const buffer = compressedPhotoAfterFiles[i]
       attachments.push({
         filename: `zdjecie-po-${i + 1}.jpg`,
         content: buffer,
-        contentType: file.type || 'image/jpeg'
+        contentType: 'image/jpeg'
       })
     }
 
