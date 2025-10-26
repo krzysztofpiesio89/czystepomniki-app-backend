@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import os from 'os'
 
-const dbDir = process.env.VERCEL ? '/tmp' : path.join(os.tmpdir(), 'data')
+const dbDir = process.env.VERCEL ? '/tmp' : path.join(process.cwd(), 'database')
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true })
 }
