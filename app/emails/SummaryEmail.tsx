@@ -3,6 +3,7 @@ import { Section, Row, Text, Column, Img, Link, Html, Head, Body, Hr, Button } f
 interface SummaryEmailProps {
   contactName: string;
   email: string;
+  greeting?: string;
   servicePackage?: string;
   servicePrice?: string;
   cemetery?: string;
@@ -13,6 +14,39 @@ interface SummaryEmailProps {
   photoBeforeUrls: string[];
   photoAfterUrls: string[];
   services?: string[];
+}
+
+// Function to detect gender from Polish name
+function detectGenderFromPolishName(name: string): 'male' | 'female' | 'unknown' {
+  if (!name) return 'unknown';
+
+  // Split name and get first part (assuming first name is first)
+  const firstName = name.trim().split(' ')[0].toLowerCase();
+
+  // Common Polish female name endings
+  const femaleEndings = ['a', 'ia', 'la', 'na', 'ra', 'ta', 'wa', 'za'];
+
+  // Common Polish male name endings (but many male names also end with 'a')
+  const maleEndings = ['ek', 'el', 'er', 'ik', 'in', 'is', 'on', 'or', 'us'];
+
+  // Check for female endings
+  if (femaleEndings.some(ending => firstName.endsWith(ending))) {
+    // Special cases where names ending with 'a' are male
+    const maleNamesEndingWithA = ['kuba', 'mikołaj', 'bartek', 'marek', 'jarek', 'darek', 'tomek', 'krzysiek', 'michał', 'piotr', 'janusz', 'stanisław', 'jerzy', 'andrzej', 'wojciech', 'tomasz', 'adam', 'marcin', 'paweł', 'łukasz', 'grzegorz', 'robert', 'mariusz', 'dariusz', 'krzysztof', 'rafal', 'arkadiusz', 'bogdan', 'cezary', 'damian', 'edward', 'filip', 'gabriel', 'henryk', 'ireneusz', 'jakub', 'karol', 'leszek', 'maciej', 'norbert', 'oskar', 'patryk', 'radosław', 'sebastian', 'szymon', 'tadeusz', 'wiktor', 'zbigniew', 'aleksander', 'bartłomiej', 'bartosz', 'dominik', 'emil', 'feliks', 'gustaw', 'hubert', 'ignacy', 'józef', 'kamil', 'konrad', 'leon', 'mateusz', 'nikodem', 'oliwier', 'przemysław', 'remigiusz', 'sławomir', 'teodor', 'władysław', 'zenon', 'zygmunt'];
+
+    if (maleNamesEndingWithA.includes(firstName)) {
+      return 'male';
+    }
+    return 'female';
+  }
+
+  // Check for male endings
+  if (maleEndings.some(ending => firstName.endsWith(ending))) {
+    return 'male';
+  }
+
+  // Default to unknown if can't determine
+  return 'unknown';
 }
 
 // Globalne style dla Body
@@ -27,20 +61,21 @@ const CONTENT_PADDING = '20px';
 
 // Stały styl dla czarnego przycisku opinii
 const opinionButtonStyle = {
-    backgroundColor: '#1a1a1a', 
-    borderRadius: '8px', 
-    padding: '12px 12px', 
-    textAlign: 'center' as const, 
-    fontWeight: 'bold', 
-    fontSize: '18px', 
+    backgroundColor: '#1a1a1a',
+    borderRadius: '8px',
+    padding: '12px 12px',
+    textAlign: 'center' as const,
+    fontWeight: 'bold',
+    fontSize: '18px',
     color: '#ffffff',
-    width: '100%',
-    display: 'block',
+    display: 'inline-block',
+    margin: '0 auto',
 };
 
 export default function SummaryEmail({
   contactName,
   email,
+  greeting,
   servicePackage,
   servicePrice,
   cemetery,
@@ -52,7 +87,13 @@ export default function SummaryEmail({
   photoAfterUrls,
   services = []
 }: SummaryEmailProps) {
-  
+
+  // Use provided greeting or determine from name
+  const finalGreeting = greeting || (() => {
+    const gender = detectGenderFromPolishName(contactName);
+    return gender === 'female' ? 'Szanowna Pani,' : gender === 'male' ? 'Szanowny Panie,' : 'Szanowny Kliencie,';
+  })();
+
   const renderImageGrid = (urls: string[]) => {
     return urls.map((url, index) => (
       <Row key={index} style={{ marginTop: '16px' }}>
@@ -143,7 +184,7 @@ export default function SummaryEmail({
         <Section style={{ backgroundColor: '#ffffff', padding: '24px 0 0 0' }}>
           <ContentWrapper>
             <Text style={{ fontSize: '19px', lineHeight: '28px', fontWeight: '600', color: '#111827', margin: '0 0 8px 0' }}>
-              Szanowny Kliencie,
+              {finalGreeting}
             </Text>
             <Text style={{ fontSize: '19px', lineHeight: '30px', color: '#4b5563', margin: '12px 0' }}>
               Z przyjemnością informujemy, że w dniu 

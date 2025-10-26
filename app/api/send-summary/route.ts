@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
 
     const contactName = formData.get('contactName') as string
     const email = formData.get('email') as string
+    const greeting = formData.get('greeting') as string
     const servicePackage = formData.get('servicePackage') as string
     const servicePrice = formData.get('servicePrice') as string
     const cemetery = formData.get('cemetery') as string
@@ -135,6 +136,7 @@ export async function POST(request: NextRequest) {
       SummaryEmail({
         contactName,
         email,
+        greeting,
         servicePackage,
         servicePrice,
         cemetery,
