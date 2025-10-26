@@ -1,4 +1,5 @@
 import { Section, Row, Text, Column, Img, Link, Html, Head, Body, Hr, Button } from "@react-email/components";
+import { SocialIcon } from "react-social-icons";
 
 interface SummaryEmailProps {
   contactName: string;
@@ -315,19 +316,13 @@ export default function SummaryEmail({
                 Twoja opinia pomoże nam w doskonaleniu naszych usług.
               </Text>
               <div style={{ textAlign: 'center', margin: '20px 0' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', margin: '20px 0' }}>
-                  <Img
-                    src="/social/google.svg"
-                    alt="Google"
-                    width="20"
-                    height="20"
-                    style={{ verticalAlign: 'middle' }}
-                  />
+                <div style={{ textAlign: 'center', margin: '20px 0' }}>
                   <Button
-                    style={{...opinionButtonStyle, fontSize: '16px', padding: '14px 16px', margin: '0'}}
+                    style={{...opinionButtonStyle, fontSize: '16px', padding: '14px 16px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', minWidth: '200px'}}
                     className="mobile-full-width"
                     href="https://g.page/r/CYrcRTvHckvaEBM/review"
                   >
+                    <SocialIcon network="google" style={{ width: '20px', height: '20px', margin: '0' }} />
                     Zostaw opinię w Google
                   </Button>
                 </div>
@@ -370,24 +365,12 @@ export default function SummaryEmail({
               <Row style={{ borderTop: '1px solid #333333', paddingTop: '20px', marginTop: '20px' }}>
                 <Column style={{ textAlign: 'center' as const, width: '100%' }} colSpan={2}>
                   {/* Ikona Facebook */}
-                  <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block' }}>
-                    <Img
-                      src="/social/faceboook.svg"
-                      alt="Facebook"
-                      width="24"
-                      height="24"
-                      style={{ verticalAlign: 'middle' }}
-                    />
+                  <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }}>
+                    <SocialIcon network="facebook" style={{ width: '24px', height: '24px' }} />
                   </Link>
                   {/* Ikona X (Twitter) */}
-                  <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block' }}>
-                    <Img
-                      src="/social/x.svg"
-                      alt="X (Twitter)"
-                      width="24"
-                      height="24"
-                      style={{ verticalAlign: 'middle' }}
-                    />
+                  <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }}>
+                    <SocialIcon network="x" style={{ width: '24px', height: '24px' }} />
                   </Link>
                 </Column>
               </Row>

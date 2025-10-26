@@ -218,7 +218,8 @@ const seedCemeteries = () => {
     { id: 'm7q2biAUvRd5g7fC6', name: 'Cmentarz, Garwolińska 2, 08-420 Miastków Kościelny' },
     { id: 'UK4yJF7zm2yNEKKNA', name: 'Cmentarz parafialny Żelechów, Długa, 08-430 Żelechów' },
     { id: 'kckwH9NFsFQvhAgN7', name: 'Cmentarz Parafialny, Krępska 27, 08-460 Sobolew' },
-    { id: 'NXw3Qd69nFQ62mw37', name: 'Cmentarz Wolski, Warszawa' }
+    { id: 'NXw3Qd69nFQ62mw37', name: 'Cmentarz Wolski, Warszawa' },
+    { id: 'G348+VQ', name: 'Cmentarz w Serocku' }
   ];
 
   const insertStmt = db.prepare('INSERT OR IGNORE INTO cemeteries (id, name) VALUES (?, ?)');
