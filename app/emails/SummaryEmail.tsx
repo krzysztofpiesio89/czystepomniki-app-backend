@@ -314,13 +314,15 @@ export default function SummaryEmail({
               <Text style={{ fontSize: '18px', lineHeight: '28px', color: '#4b5563', margin: '0 0 20px 0' }} className="mobile-font-size">
                 Twoja opinia pomoże nam w doskonaleniu naszych usług.
               </Text>
-              <Button
-                style={{...opinionButtonStyle, fontSize: '16px', padding: '14px 16px'}}
-                className="mobile-full-width"
-                href="https://g.page/r/CYrcRTvHckvaEBM/review"
-              >
-                Zostaw opinię w Google
-              </Button>
+              <div style={{ textAlign: 'center', margin: '20px 0' }}>
+                <Button
+                  style={{...opinionButtonStyle, fontSize: '16px', padding: '14px 16px'}}
+                  className="mobile-full-width"
+                  href="https://g.page/r/CYrcRTvHckvaEBM/review"
+                >
+                  Zostaw opinię w Google
+                </Button>
+              </div>
             </Section>
           </ContentWrapper>
         </Section>
@@ -361,7 +363,7 @@ export default function SummaryEmail({
                   {/* Ikona Facebook */}
                   <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block' }}>
                     <Img
-                      src="https://upload.wikimedia.org/wikipedia/commons/7/71/Facebook_white_icon_svg.svg"
+                      src="/social/faceboook.svg"
                       alt="Facebook"
                       width="24"
                       height="24"
@@ -371,7 +373,7 @@ export default function SummaryEmail({
                   {/* Ikona X (Twitter) */}
                   <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block' }}>
                     <Img
-                      src="https://upload.wikimedia.org/wikipedia/commons/4/4f/X_logo_2023.svg"
+                      src="/social/x.svg"
                       alt="X (Twitter)"
                       width="24"
                       height="24"
