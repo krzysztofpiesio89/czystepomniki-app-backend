@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
-import { dbStatements } from '@/lib/db'
+import { prisma } from '@/lib/prisma'
 import { render } from '@react-email/render'
 import SummaryEmail from '@/app/emails/SummaryEmail'
 import { put } from '@vercel/blob'
@@ -191,16 +191,15 @@ export async function POST(request: NextRequest) {
 
     // Save summary to database
     try {
-      const photosBeforeJson = JSON.stringify(photoBeforeUrls)
-      const photosAfterJson = JSON.stringify(photoAfterUrls)
-
-      dbStatements.insertSummary.run(
-        contactName,
-        email,
-        description,
-        photosBeforeJson,
-        photosAfterJson
-      )
+      await prisma.summary.create({
+        data: {
+          contactName,
+          email,
+          description,
+          photosBefore: JSON.stringify(photoBeforeUrls),
+          photosAfter: JSON.stringify(photoAfterUrls)
+        }
+      })
     } catch (dbError) {
       console.error('Database error:', dbError)
       // Don't fail the request if DB save fails, but log it

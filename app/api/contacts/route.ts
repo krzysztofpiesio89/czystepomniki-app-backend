@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { dbStatements } from '@/lib/db'
+import { prisma } from '@/lib/prisma'
 
 
 export async function GET() {
   try {
-    const contacts = dbStatements.getAllContacts.all()
+    const contacts = await prisma.contact.findMany({
+      orderBy: { createdAt: 'desc' }
+    })
     return NextResponse.json(contacts)
   } catch (error) {
     console.error('Database error fetching contacts:', error)
@@ -47,7 +49,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if contact already exists
-    const existingContact = dbStatements.getContactByEmail.get(email)
+    const existingContact = await prisma.contact.findUnique({
+      where: { email }
+    })
     if (existingContact) {
       return NextResponse.json(
         { error: 'Contact with this email already exists' },
@@ -57,19 +61,17 @@ export async function POST(request: NextRequest) {
 
     // Insert new contact
     try {
-      const result = dbStatements.insertContact.run(name, email, phone || '', notes || '', googlePlusCode || '')
-
-      return NextResponse.json(
-        {
-          id: result.lastInsertRowid,
+      const contact = await prisma.contact.create({
+        data: {
           name,
           email,
-          phone: phone || '',
-          notes: notes || '',
-          googlePlusCode: googlePlusCode || ''
-        },
-        { status: 201 }
-      )
+          phone: phone || null,
+          notes: notes || null,
+          googlePlusCode: googlePlusCode || null
+        }
+      })
+
+      return NextResponse.json(contact, { status: 201 })
     } catch (dbError) {
       console.error('Database error during contact insertion:', dbError)
       return NextResponse.json(
@@ -109,14 +111,9 @@ export async function DELETE(request: NextRequest) {
     }
 
     try {
-      const result = dbStatements.deleteContact.run(contactId)
-
-      if (result.changes === 0) {
-        return NextResponse.json(
-          { error: 'Contact not found' },
-          { status: 404 }
-        )
-      }
+      await prisma.contact.delete({
+        where: { id: id }
+      })
 
       return NextResponse.json({ message: 'Contact deleted successfully' })
     } catch (dbError) {

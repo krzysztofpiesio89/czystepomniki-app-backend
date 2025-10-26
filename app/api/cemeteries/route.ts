@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { dbStatements } from '@/lib/db'
+import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const cemeteries = dbStatements.getAllCemeteries.all()
+    const cemeteries = await prisma.cemetery.findMany({
+      orderBy: { name: 'asc' }
+    })
     return NextResponse.json(cemeteries)
   } catch (error) {
     console.error('Database error fetching cemeteries:', error)
