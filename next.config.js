@@ -2,6 +2,13 @@
 const nextConfig = {
   // Next.js 15 już domyślnie używa app directory
 
+  // Increase payload size limits for image uploads
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb', // Increase from default 1mb to 100mb for up to 20 images
+    },
+  },
+
   // Environment variables for production (Vercel)
   env: {
     RESEND_API_KEY: process.env.RESEND_API_KEY,
