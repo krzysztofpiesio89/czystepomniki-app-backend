@@ -2,10 +2,10 @@
 const nextConfig = {
   // Next.js 15 już domyślnie używa app directory
 
-  // Increase payload size limits for image uploads
+  // Remove payload size limits for unlimited image uploads
   api: {
     bodyParser: {
-      sizeLimit: '100mb', // Increase from default 1mb to 100mb for up to 20 images
+      sizeLimit: '500mb', // Allow very large payloads for unlimited images
     },
   },
 

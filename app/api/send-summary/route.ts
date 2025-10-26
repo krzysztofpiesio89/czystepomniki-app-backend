@@ -44,23 +44,11 @@ export async function POST(request: NextRequest) {
       photoAfterFiles.push(...files)
     }
 
-    // Check total upload size (max 100MB = 104857600 bytes for up to 20 images)
+    // No size or count limits - allow unlimited uploads
     const totalSize = [...photoBeforeFiles, ...photoAfterFiles].reduce((sum, file) => sum + file.size, 0)
-    if (totalSize > 104857600) {
-      return NextResponse.json(
-        { error: 'Total upload size exceeds 100MB limit' },
-        { status: 400 }
-      )
-    }
-
-    // Check total number of images (max 20 images total)
     const totalImages = photoBeforeFiles.length + photoAfterFiles.length
-    if (totalImages > 20) {
-      return NextResponse.json(
-        { error: 'Maximum 20 images allowed total' },
-        { status: 400 }
-      )
-    }
+
+    console.log(`Processing ${totalImages} images with total size: ${(totalSize / 1024 / 1024).toFixed(2)}MB`)
 
     // Compress images to max 300kb each
     const compressImage = async (file: File): Promise<Buffer> => {
