@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { dbStatements } from '@/lib/db'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +13,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user from database
-    const user = dbStatements.getUserByEmail.get(email) as any
+    const user = await prisma.user.findUnique({
+      where: { email }
+    })
 
     if (!user) {
       return NextResponse.json(
@@ -24,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     // Simple password check (in production, use proper hashing)
     const hashedPassword = Buffer.from(password).toString('base64')
-    if (user.password_hash !== hashedPassword) {
+    if (user.passwordHash !== hashedPassword) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
@@ -32,9 +34,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if this is first login
-    if (user.is_first_login) {
+    if (user.isFirstLogin) {
       // Mark as not first login
-      dbStatements.updateUserFirstLogin.run(user.id)
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { isFirstLogin: false }
+      })
 
       return NextResponse.json({
         user: {

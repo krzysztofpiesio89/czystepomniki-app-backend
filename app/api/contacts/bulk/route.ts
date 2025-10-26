@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { dbStatements } from '@/lib/db'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,32 +20,29 @@ export async function POST(request: NextRequest) {
         continue // Skip invalid contacts
       }
 
-      // Check if contact already exists
-      const existing = dbStatements.getContactByEmail.get(contact.email) as any
-      if (existing) {
-        // Update existing contact
-        dbStatements.updateContact.run(
-          contact.name,
-          contact.email,
-          contact.phone || '',
-          contact.notes || '',
-          contact.googlePlusCode || '',
-          existing.id
-        )
-        savedContacts.push({ ...existing, ...contact })
-      } else {
-        // Insert new contact
-        const result = dbStatements.insertContact.run(
-          contact.name,
-          contact.email,
-          contact.phone || '',
-          contact.notes || '',
-          contact.googlePlusCode || ''
-        )
-        savedContacts.push({
-          id: result.lastInsertRowid,
-          ...contact
+      try {
+        // Use upsert to handle both create and update in one operation
+        const savedContact = await prisma.contact.upsert({
+          where: { email: contact.email },
+          update: {
+            name: contact.name,
+            phone: contact.phone || null,
+            notes: contact.notes || null,
+            googlePlusCode: contact.googlePlusCode || null
+          },
+          create: {
+            name: contact.name,
+            email: contact.email,
+            phone: contact.phone || null,
+            notes: contact.notes || null,
+            googlePlusCode: contact.googlePlusCode || null
+          }
         })
+
+        savedContacts.push(savedContact)
+      } catch (contactError) {
+        console.error('Error saving contact:', contact.email, contactError)
+        // Continue with other contacts even if one fails
       }
     }
 
