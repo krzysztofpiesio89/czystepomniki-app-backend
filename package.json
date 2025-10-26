@@ -23,7 +23,6 @@
     "prisma": "^6.18.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-social-icons": "^6.25.0",
     "resend": "^4.0.0",
     "sharp": "^0.34.4",
     "tsx": "^4.20.6"

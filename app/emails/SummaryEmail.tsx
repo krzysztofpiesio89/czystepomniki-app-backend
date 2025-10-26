@@ -1,5 +1,4 @@
 import { Section, Row, Text, Column, Img, Link, Html, Head, Body, Hr, Button } from "@react-email/components";
-import { SocialIcon } from "react-social-icons";
 
 interface SummaryEmailProps {
   contactName: string;
@@ -322,7 +321,16 @@ export default function SummaryEmail({
                     className="mobile-full-width"
                     href="https://g.page/r/CYrcRTvHckvaEBM/review"
                   >
-                    <SocialIcon network="google" style={{ width: '20px', height: '20px', margin: '0' }} />
+                    <Img
+                      src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg"
+                      width="20"
+                      height="20"
+                      alt="Google"
+                      style={{
+                        verticalAlign: 'middle',
+                        filter: "invert(52%) sepia(97%) saturate(7470%) hue-rotate(1deg) brightness(101%) contrast(104%)"
+                      }}
+                    />
                     Zostaw opinię w Google
                   </Button>
                 </div>
@@ -366,11 +374,29 @@ export default function SummaryEmail({
                 <Column style={{ textAlign: 'center' as const, width: '100%' }} colSpan={2}>
                   {/* Ikona Facebook */}
                   <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }}>
-                    <SocialIcon network="facebook" style={{ width: '24px', height: '24px' }} />
+                    <Img
+                      src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg"
+                      width="24"
+                      height="24"
+                      alt="Facebook"
+                      style={{
+                        verticalAlign: 'middle',
+                        filter: "invert(19%) sepia(87%) saturate(2478%) hue-rotate(201deg) brightness(95%) contrast(97%)"
+                      }}
+                    />
                   </Link>
                   {/* Ikona X (Twitter) */}
                   <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }}>
-                    <SocialIcon network="x" style={{ width: '24px', height: '24px' }} />
+                    <Img
+                      src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg"
+                      width="24"
+                      height="24"
+                      alt="X (Twitter)"
+                      style={{
+                        verticalAlign: 'middle',
+                        filter: "invert(0%)"
+                      }}
+                    />
                   </Link>
                 </Column>
               </Row>
