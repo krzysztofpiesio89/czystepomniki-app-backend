@@ -8,10 +8,11 @@
     "build": "prisma generate && next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "postbuild": "prisma db push",
+    "postbuild": "prisma db push && npm run seed",
     "migrate": "tsx scripts/migrate-to-prisma.ts",
     "db:reset": "prisma db push --force-reset",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
