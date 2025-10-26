@@ -315,13 +315,22 @@ export default function SummaryEmail({
                 Twoja opinia pomoże nam w doskonaleniu naszych usług.
               </Text>
               <div style={{ textAlign: 'center', margin: '20px 0' }}>
-                <Button
-                  style={{...opinionButtonStyle, fontSize: '16px', padding: '14px 16px'}}
-                  className="mobile-full-width"
-                  href="https://g.page/r/CYrcRTvHckvaEBM/review"
-                >
-                  Zostaw opinię w Google
-                </Button>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', margin: '20px 0' }}>
+                  <Img
+                    src="/social/google.svg"
+                    alt="Google"
+                    width="20"
+                    height="20"
+                    style={{ verticalAlign: 'middle' }}
+                  />
+                  <Button
+                    style={{...opinionButtonStyle, fontSize: '16px', padding: '14px 16px', margin: '0'}}
+                    className="mobile-full-width"
+                    href="https://g.page/r/CYrcRTvHckvaEBM/review"
+                  >
+                    Zostaw opinię w Google
+                  </Button>
+                </div>
               </div>
             </Section>
           </ContentWrapper>
