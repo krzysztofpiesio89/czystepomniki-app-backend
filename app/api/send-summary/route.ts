@@ -22,6 +22,8 @@ export async function POST(request: NextRequest) {
     const graveLocation = formData.get('graveLocation') as string
     const googlePlusCode = formData.get('googlePlusCode') as string
     const description = formData.get('description') as string
+    const servicesJson = formData.get('services') as string
+    const services = servicesJson ? JSON.parse(servicesJson) : []
 
     // Get photo files - collect all files with different indices
     const photoBeforeFiles: File[] = []
@@ -141,7 +143,8 @@ export async function POST(request: NextRequest) {
         description,
         currentDate,
         photoBeforeUrls,
-        photoAfterUrls
+        photoAfterUrls,
+        services
       })
     )
 

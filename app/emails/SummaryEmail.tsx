@@ -12,6 +12,7 @@ interface SummaryEmailProps {
   currentDate: string;
   photoBeforeUrls: string[];
   photoAfterUrls: string[];
+  services?: string[];
 }
 
 // Globalne style dla Body
@@ -48,7 +49,8 @@ export default function SummaryEmail({
   description,
   currentDate,
   photoBeforeUrls,
-  photoAfterUrls
+  photoAfterUrls,
+  services = []
 }: SummaryEmailProps) {
   
   const renderImageGrid = (urls: string[]) => {
@@ -196,7 +198,32 @@ export default function SummaryEmail({
           </ContentWrapper>
         </Section>
 
-        {/* SEKCJA 6: OPIS PRAC (Białe tło, Ciemny tekst) */}
+        {/* SEKCJA 6: WYKONANE USŁUGI (Białe tło, Ciemny tekst) */}
+        {services.length > 0 && (
+          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 24px 0' }}>
+            <ContentWrapper>
+              <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0 0 12px 0' }}>
+                Wykonane Usługi
+              </Text>
+              <ul style={{ fontSize: '18px', lineHeight: '30px', color: '#4b5563', margin: '0', paddingLeft: '20px' }}>
+                {services.map((service, index) => (
+                  <li key={index} style={{ marginBottom: '8px' }}>
+                    {service === 'sweeping' && '🧹 Zamiatanie'}
+                    {service === 'washing' && '💧 Mycie'}
+                    {service === 'flower-removal' && '🌸 Usunięcie starych kwiatów'}
+                    {service === 'area-cleaning' && '🧽 Sprzątanie okolicy pomnika'}
+                    {service === 'weed-removal' && '🌿 Usuwanie chwastów i pielęgnacja'}
+                    {service === 'wreath-removal' && '💐 Usunięcie wieńców i zniczy'}
+                    {service === 'detailed-cleaning' && '✨ Dokładne czyszczenie'}
+                    {service === 'area-maintenance' && '🌳 Pielęgnacja terenu wokół grobu'}
+                  </li>
+                ))}
+              </ul>
+            </ContentWrapper>
+          </Section>
+        )}
+
+        {/* SEKCJA 7: OPIS PRAC (Białe tło, Ciemny tekst) */}
         <Section style={{ backgroundColor: '#ffffff', padding: '0 0 24px 0' }}>
           <ContentWrapper>
             <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0 0 12px 0' }}>
@@ -208,7 +235,7 @@ export default function SummaryEmail({
           </ContentWrapper>
         </Section>
 
-        {/* SEKCJA 7: ZDJĘCIA PRZED (Białe tło, Ciemny tekst) */}
+        {/* SEKCJA 8: ZDJĘCIA PRZED (Białe tło, Ciemny tekst) */}
         {photoBeforeUrls.length > 0 && (
           <Section style={{ backgroundColor: '#ffffff', padding: '16px 0' }}>
             <ContentWrapper>
@@ -222,7 +249,7 @@ export default function SummaryEmail({
           </Section>
         )}
 
-        {/* SEKCJA 8: ZDJĘCIA PO (Białe tło, Ciemny tekst) */}
+        {/* SEKCJA 9: ZDJĘCIA PO (Białe tło, Ciemny tekst) */}
         {photoAfterUrls.length > 0 && (
           <Section style={{ backgroundColor: '#ffffff', padding: '16px 0' }}>
             <ContentWrapper>
