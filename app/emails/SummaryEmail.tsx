@@ -310,7 +310,7 @@ export default function SummaryEmail({
         )}
 
         {/* SEKCJA 9: OPINIA GOOGLE (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '120px 0 160px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '60px 0 80px 0' }}>
           <ContentWrapper>
             <Section style={{ backgroundColor: '#f8f9fa', borderRadius: '12px', padding: '32px 16px', textAlign: 'center' as const }} className="mobile-padding">
               <Text style={{ fontSize: '22px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 8px 0' }} className="mobile-font-size">
@@ -325,16 +325,7 @@ export default function SummaryEmail({
                   className="mobile-full-width"
                   href="https://g.page/r/CYrcRTvHckvaEBM/review"
                 >
-                  <Img
-                    src="https://czystepomniki-app-backend.vercel.app/social/google.svg"
-                    width="20"
-                    height="20"
-                    alt="Google"
-                    style={{
-                      verticalAlign: 'middle'
-                    }}
-                  />
-                  Zostaw opinię w Google
+                  ⭐ Zostaw opinię w Google
                 </Button>
               </div>
             </Section>
@@ -342,9 +333,9 @@ export default function SummaryEmail({
         </Section>
 
         {/* SEKCJA 10: PODZIĘKOWANIE (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '80px 0 120px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '40px 0 60px 0' }}>
           <ContentWrapper>
-            <Hr style={{ margin: '0 0 60px 0', borderColor: '#e5e7eb' }} />
+            <Hr style={{ margin: '0 0 30px 0', borderColor: '#e5e7eb' }} />
             <Text style={{ textAlign: 'center' as const, fontSize: '20px', lineHeight: '32px', color: '#4b5563', fontStyle: 'italic', margin: '0', fontWeight: '500' }}>
               Dziękujemy za zaufanie i możliwość zadbania o miejsce pamięci Państwa bliskich.
             </Text>
@@ -374,30 +365,7 @@ export default function SummaryEmail({
               </Row>
               <Row style={{ borderTop: '1px solid #333333', paddingTop: '20px', marginTop: '20px' }}>
                 <Column style={{ textAlign: 'center' as const, width: '100%' }} colSpan={2}>
-                  {/* Ikona Facebook */}
-                  <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }}>
-                    <Img
-                      src="https://czystepomniki-app-backend.vercel.app/social/faceboook.svg"
-                      width="24"
-                      height="24"
-                      alt="Facebook"
-                      style={{
-                        verticalAlign: 'middle'
-                      }}
-                    />
-                  </Link>
-                  {/* Ikona X (Twitter) */}
-                  <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }}>
-                    <Img
-                      src="https://czystepomniki-app-backend.vercel.app/social/x.svg"
-                      width="24"
-                      height="24"
-                      alt="X (Twitter)"
-                      style={{
-                        verticalAlign: 'middle'
-                      }}
-                    />
-                  </Link>
+                  <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ color: 'inherit', textDecoration: 'none', margin: '0 8px' }}>Nasz Facebook</Link> | <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ color: 'inherit', textDecoration: 'none', margin: '0 8px' }}>Nasz X</Link>
                 </Column>
               </Row>
             </table>
