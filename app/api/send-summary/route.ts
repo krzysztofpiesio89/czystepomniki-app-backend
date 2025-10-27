@@ -92,32 +92,22 @@ export async function POST(request: NextRequest) {
       return compressed
     }
 
-    // Compress all photoBefore files with memory management
+    // Compress all photoBefore files
     const compressedPhotoBeforeFiles: Buffer[] = []
     for (let i = 0; i < photoBeforeFiles.length; i++) {
       const file = photoBeforeFiles[i]
       console.log(`Compressing before photo ${i + 1}/${photoBeforeFiles.length}`)
       const compressed = await compressImage(file)
       compressedPhotoBeforeFiles.push(compressed)
-
-      // Force garbage collection if available
-      if (global.gc) {
-        global.gc()
-      }
     }
 
-    // Compress all photoAfter files with memory management
+    // Compress all photoAfter files
     const compressedPhotoAfterFiles: Buffer[] = []
     for (let i = 0; i < photoAfterFiles.length; i++) {
       const file = photoAfterFiles[i]
       console.log(`Compressing after photo ${i + 1}/${photoAfterFiles.length}`)
       const compressed = await compressImage(file)
       compressedPhotoAfterFiles.push(compressed)
-
-      // Force garbage collection if available
-      if (global.gc) {
-        global.gc()
-      }
     }
 
     // For now, we'll send a simple email without attachments
@@ -135,19 +125,13 @@ export async function POST(request: NextRequest) {
     const photoBeforeUrls = []
     const photoAfterUrls = []
 
-    // Upload compressed images to Vercel Blob Storage with memory management
+    // Upload compressed images to Vercel Blob Storage
     for (let i = 0; i < compressedPhotoBeforeFiles.length; i++) {
       const buffer = compressedPhotoBeforeFiles[i]
       const fileName = `przed-${randomUUID()}.jpg`
       console.log(`Uploading before photo ${i + 1}/${compressedPhotoBeforeFiles.length}`)
       const blob = await put(fileName, buffer, { access: 'public' })
       photoBeforeUrls.push(blob.url)
-
-      // Clear buffer reference and force GC
-      compressedPhotoBeforeFiles[i] = Buffer.alloc(0)
-      if (global.gc) {
-        global.gc()
-      }
     }
 
     for (let i = 0; i < compressedPhotoAfterFiles.length; i++) {
@@ -156,12 +140,6 @@ export async function POST(request: NextRequest) {
       console.log(`Uploading after photo ${i + 1}/${compressedPhotoAfterFiles.length}`)
       const blob = await put(fileName, buffer, { access: 'public' })
       photoAfterUrls.push(blob.url)
-
-      // Clear buffer reference and force GC
-      compressedPhotoAfterFiles[i] = Buffer.alloc(0)
-      if (global.gc) {
-        global.gc()
-      }
     }
 
     const html = render(
@@ -189,11 +167,13 @@ export async function POST(request: NextRequest) {
     // Add before photos as attachments (up to maxAttachments/2)
     const beforeLimit = Math.min(Math.floor(maxAttachments / 2), compressedPhotoBeforeFiles.length)
     for (let i = 0; i < beforeLimit; i++) {
-      // Re-compress if needed since we cleared the buffers
-      if (compressedPhotoBeforeFiles[i] && compressedPhotoBeforeFiles[i].length > 0) {
+      // Need to re-compress since we cleared the buffers for memory management
+      const originalFile = photoBeforeFiles[i]
+      if (originalFile) {
+        const reCompressed = await compressImage(originalFile)
         attachments.push({
           filename: `zdjecie-przed-${i + 1}.jpg`,
-          content: compressedPhotoBeforeFiles[i],
+          content: reCompressed,
           contentType: 'image/jpeg'
         })
       }
@@ -202,11 +182,13 @@ export async function POST(request: NextRequest) {
     // Add after photos as attachments (up to maxAttachments/2)
     const afterLimit = Math.min(Math.floor(maxAttachments / 2), compressedPhotoAfterFiles.length)
     for (let i = 0; i < afterLimit; i++) {
-      // Re-compress if needed since we cleared the buffers
-      if (compressedPhotoAfterFiles[i] && compressedPhotoAfterFiles[i].length > 0) {
+      // Need to re-compress since we cleared the buffers for memory management
+      const originalFile = photoAfterFiles[i]
+      if (originalFile) {
+        const reCompressed = await compressImage(originalFile)
         attachments.push({
           filename: `zdjecie-po-${i + 1}.jpg`,
-          content: compressedPhotoAfterFiles[i],
+          content: reCompressed,
           contentType: 'image/jpeg'
         })
       }
