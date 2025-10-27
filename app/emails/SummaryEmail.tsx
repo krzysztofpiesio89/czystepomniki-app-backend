@@ -111,7 +111,7 @@ export default function SummaryEmail({
   };
 
   // Centralny kontener o stałej szerokości dla treści, osadzony w sekcji pełnej szerokości
-  const ContentWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  const ContentWrapper = ({ children }: { children?: React.ReactNode }) => (
     <div style={{
       width: '100%',
       maxWidth: '600px',
@@ -180,32 +180,39 @@ export default function SummaryEmail({
           </ContentWrapper>
         </Section>
 
-        {/* SEKCJA 2: INFORMACJE O KLIENCIE (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '24px 0 0 0' }}>
+        {/* SEKCJA 2: ODSTĘP PRZED POWITANIEM */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '40px 0 0 0' }}>
           <ContentWrapper>
-            <Text style={{ fontSize: '19px', lineHeight: '28px', fontWeight: '600', color: '#111827', margin: '0 0 8px 0' }}>
+            {/* Puste miejsce dla elegancji */}
+          </ContentWrapper>
+        </Section>
+
+        {/* SEKCJA 3: POWITANIE (Białe tło, Ciemny tekst) */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '16px 0 0 0' }}>
+          <ContentWrapper>
+            <Text style={{ fontSize: '20px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0', fontStyle: 'italic' }}>
               {finalGreeting}
             </Text>
-            <Text style={{ fontSize: '19px', lineHeight: '30px', color: '#4b5563', margin: '12px 0' }}>
-              Z przyjemnością informujemy, że w dniu 
-              <strong style={{ whiteSpace: 'nowrap' }}> 📅 {currentDate}</strong>&nbsp;
+            <Text style={{ fontSize: '18px', lineHeight: '28px', color: '#4b5563', margin: '0 0 24px 0' }}>
+              Z przyjemnością informujemy, że w dniu
+              <strong style={{ whiteSpace: 'nowrap', marginLeft: '8px' }}> 📅 {currentDate}</strong>
               wykonaliśmy zlecone prace porządkowe miejsca spoczynku Państwa bliskich.
             </Text>
           </ContentWrapper>
         </Section>
 
-        {/* SEKCJA 3: LINIA POZIOMA */}
-        <Section style={{ backgroundColor: '#ffffff' }}>
+        {/* SEKCJA 4: ODSTĘP MIĘDZY SEKCJAMI */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '32px 0' }}>
           <ContentWrapper>
-            <Hr style={{ margin: '24px 0', borderColor: '#e5e7eb' }} />
+            <Hr style={{ margin: '0 auto', borderColor: '#e5e7eb', width: '60%', borderWidth: '1px' }} />
           </ContentWrapper>
         </Section>
 
-        {/* SEKCJA 4: SZCZEGÓŁY USŁUGI (Białe tło, Ciemny tekst) */}
+        {/* SEKCJA 5: SZCZEGÓŁY USŁUGI (Białe tło, Ciemny tekst) */}
         {(servicePackage || cemetery || graveLocation) && (
-          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 24px 0' }}>
+          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 32px 0' }}>
             <ContentWrapper>
-              <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0 0 12px 0' }}>
+              <Text style={{ fontSize: '20px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0', letterSpacing: '0.5px' }}>
                 Szczegóły Usługi
               </Text>
               {servicePackage && (
@@ -232,18 +239,18 @@ export default function SummaryEmail({
           </Section>
         )}
 
-        {/* SEKCJA 5: LINIA POZIOMA */}
-        <Section style={{ backgroundColor: '#ffffff' }}>
+        {/* SEKCJA 6: ODSTĘP MIĘDZY SEKCJAMI */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '24px 0' }}>
           <ContentWrapper>
-            <Hr style={{ margin: '24px 0', borderColor: '#e5e7eb' }} />
+            <Hr style={{ margin: '0 auto', borderColor: '#e5e7eb', width: '60%', borderWidth: '1px' }} />
           </ContentWrapper>
         </Section>
 
-        {/* SEKCJA 6: WYKONANE USŁUGI (Białe tło, Ciemny tekst) */}
+        {/* SEKCJA 7: WYKONANE USŁUGI (Białe tło, Ciemny tekst) */}
         {services.length > 0 && (
-          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 24px 0' }}>
+          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 32px 0' }}>
             <ContentWrapper>
-              <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0 0 12px 0' }}>
+              <Text style={{ fontSize: '20px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0', letterSpacing: '0.5px' }}>
                 Wykonane Usługi
               </Text>
               <ul style={{ fontSize: '18px', lineHeight: '30px', color: '#4b5563', margin: '0', paddingLeft: '20px' }}>
@@ -264,13 +271,13 @@ export default function SummaryEmail({
           </Section>
         )}
 
-        {/* SEKCJA 7: OPIS PRAC (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '0 0 24px 0' }}>
+        {/* SEKCJA 8: OPIS PRAC (Białe tło, Ciemny tekst) */}
+        <Section style={{ backgroundColor: '#ffffff', padding: '0 0 32px 0' }}>
           <ContentWrapper>
-            <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0 0 12px 0' }}>
+            <Text style={{ fontSize: '20px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0', letterSpacing: '0.5px' }}>
               Zakres Wykonanych Prac
             </Text>
-            <Text style={{ fontSize: '18px', lineHeight: '30px', color: '#4b5563', margin: '0' }}>
+            <Text style={{ fontSize: '18px', lineHeight: '30px', color: '#4b5563', margin: '0', textAlign: 'justify' }}>
               {description}
             </Text>
           </ContentWrapper>
@@ -343,7 +350,7 @@ export default function SummaryEmail({
         </Section>
         
         {/* SEKCJA 11: STOPKA (Zawsze czarne tło, biały tekst) - Zwiększony padding góry */}
-        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '40px 0', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
+        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '10px 0 40px 0', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
           <ContentWrapper>
             <table style={{ width: '100%', tableLayout: 'fixed' }}>
               <Row>
@@ -365,7 +372,7 @@ export default function SummaryEmail({
               </Row>
               <Row style={{ borderTop: '1px solid #333333', paddingTop: '20px', marginTop: '20px' }}>
                 <Column style={{ textAlign: 'center' as const, width: '100%' }} colSpan={2}>
-                  <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ color: 'inherit', textDecoration: 'none', margin: '0 8px' }}>Nasz Facebook</Link> | <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ color: 'inherit', textDecoration: 'none', margin: '0 8px' }}>Nasz X</Link>
+                  <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ color: 'inherit', textDecoration: 'none', margin: '0 8px', fontSize: '14px' }}>Nasz Facebook</Link> | <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ color: 'inherit', textDecoration: 'none', margin: '0 8px', fontSize: '14px' }}>Nasz X</Link>
                 </Column>
               </Row>
             </table>
