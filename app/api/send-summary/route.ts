@@ -29,7 +29,7 @@ const uploadedImages = new Map<string, {
 // Clean up old sessions (older than 30 minutes)
 setInterval(() => {
   const now = Date.now();
-  for (const [sessionId, data] of uploadedImages.entries()) {
+  for (const [sessionId, data] of Array.from(uploadedImages.entries())) {
     if (now - data.timestamp > 30 * 60 * 1000) {
       uploadedImages.delete(sessionId);
     }
