@@ -14,9 +14,9 @@ export const maxDuration = 300; // 5 minutes timeout for large uploads
 
 export async function POST(request: NextRequest) {
   try {
-    // Increase Node.js memory limit for large uploads
+    // Increase Node.js memory limit for large uploads and enable GC
     if (typeof process !== 'undefined' && process.env) {
-      process.env.NODE_OPTIONS = '--max-old-space-size=4096';
+      process.env.NODE_OPTIONS = '--max-old-space-size=8192 --expose-gc';
     }
 
     const formData = await request.formData()
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     console.log(`Processing ${totalImages} images with total size: ${(totalSize / 1024 / 1024).toFixed(2)}MB`)
 
-    // Compress images to max 300kb each
+    // Compress images to max 300kb each with memory optimization
     const compressImage = async (file: File): Promise<Buffer> => {
       const buffer = Buffer.from(await file.arrayBuffer())
       const maxSizeBytes = 307200 // 300kb
@@ -67,47 +67,99 @@ export async function POST(request: NextRequest) {
         return buffer
       }
 
-      // Compress with Sharp
+      // Use streaming approach for large images to reduce memory usage
+      let compressed: Buffer
       let quality = 80
-      let compressed = await sharp(buffer)
-        .jpeg({ quality })
-        .toBuffer()
 
-      // Reduce quality until under limit
-      while (compressed.length > maxSizeBytes && quality > 10) {
-        quality -= 10
-        compressed = await sharp(buffer)
-          .jpeg({ quality })
+      // Try compression with decreasing quality
+      do {
+        compressed = await sharp(buffer, {
+          // Limit input buffer size for memory efficiency
+          limitInputPixels: 50 * 1024 * 1024 // 50MP limit
+        })
+          .jpeg({
+            quality,
+            progressive: true,
+            optimizeScans: true
+          })
           .toBuffer()
-      }
 
-      // If still too big, resize
+        quality -= 10
+      } while (compressed.length > maxSizeBytes && quality > 10)
+
+      // If still too big, resize with memory-efficient approach
       if (compressed.length > maxSizeBytes) {
-        compressed = await sharp(buffer)
-          .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
-          .jpeg({ quality: 70 })
+        // Calculate optimal size based on original dimensions
+        const metadata = await sharp(buffer).metadata()
+        const aspectRatio = metadata.width! / metadata.height!
+        let newWidth = 1920
+        let newHeight = Math.round(newWidth / aspectRatio)
+
+        // If height is too large, scale by height instead
+        if (newHeight > 1080) {
+          newHeight = 1080
+          newWidth = Math.round(newHeight * aspectRatio)
+        }
+
+        compressed = await sharp(buffer, {
+          limitInputPixels: 50 * 1024 * 1024
+        })
+          .resize(newWidth, newHeight, {
+            fit: 'inside',
+            withoutEnlargement: true,
+            kernel: sharp.kernel.lanczos3 // Better quality scaling
+          })
+          .jpeg({
+            quality: Math.max(quality + 20, 70), // Slightly higher quality after resize
+            progressive: true,
+            optimizeScans: true
+          })
           .toBuffer()
       }
 
       return compressed
     }
 
-    // Compress all photoBefore files
+    // Compress all photoBefore files with batch processing to optimize memory
     const compressedPhotoBeforeFiles: Buffer[] = []
-    for (let i = 0; i < photoBeforeFiles.length; i++) {
-      const file = photoBeforeFiles[i]
-      console.log(`Compressing before photo ${i + 1}/${photoBeforeFiles.length}`)
-      const compressed = await compressImage(file)
-      compressedPhotoBeforeFiles.push(compressed)
+    const batchSize = 3 // Process 3 images at a time to balance memory and speed
+
+    for (let i = 0; i < photoBeforeFiles.length; i += batchSize) {
+      const batch = photoBeforeFiles.slice(i, i + batchSize)
+      const batchPromises = batch.map(async (file, batchIndex) => {
+        const globalIndex = i + batchIndex
+        console.log(`Compressing before photo ${globalIndex + 1}/${photoBeforeFiles.length}`)
+        return await compressImage(file)
+      })
+
+      const batchResults = await Promise.all(batchPromises)
+      compressedPhotoBeforeFiles.push(...batchResults)
+
+      // Force garbage collection and delay between batches
+      if (global.gc) {
+        global.gc()
+      }
+      await new Promise(resolve => setTimeout(resolve, 200))
     }
 
-    // Compress all photoAfter files
+    // Compress all photoAfter files with batch processing
     const compressedPhotoAfterFiles: Buffer[] = []
-    for (let i = 0; i < photoAfterFiles.length; i++) {
-      const file = photoAfterFiles[i]
-      console.log(`Compressing after photo ${i + 1}/${photoAfterFiles.length}`)
-      const compressed = await compressImage(file)
-      compressedPhotoAfterFiles.push(compressed)
+    for (let i = 0; i < photoAfterFiles.length; i += batchSize) {
+      const batch = photoAfterFiles.slice(i, i + batchSize)
+      const batchPromises = batch.map(async (file, batchIndex) => {
+        const globalIndex = i + batchIndex
+        console.log(`Compressing after photo ${globalIndex + 1}/${photoAfterFiles.length}`)
+        return await compressImage(file)
+      })
+
+      const batchResults = await Promise.all(batchPromises)
+      compressedPhotoAfterFiles.push(...batchResults)
+
+      // Force garbage collection and delay between batches
+      if (global.gc) {
+        global.gc()
+      }
+      await new Promise(resolve => setTimeout(resolve, 200))
     }
 
     // For now, we'll send a simple email without attachments
@@ -125,21 +177,51 @@ export async function POST(request: NextRequest) {
     const photoBeforeUrls = []
     const photoAfterUrls = []
 
-    // Upload compressed images to Vercel Blob Storage
-    for (let i = 0; i < compressedPhotoBeforeFiles.length; i++) {
-      const buffer = compressedPhotoBeforeFiles[i]
-      const fileName = `przed-${randomUUID()}.jpg`
-      console.log(`Uploading before photo ${i + 1}/${compressedPhotoBeforeFiles.length}`)
-      const blob = await put(fileName, buffer, { access: 'public' })
-      photoBeforeUrls.push(blob.url)
+    // Upload compressed images to Vercel Blob Storage with batching for memory efficiency
+    const uploadBatchSize = 5 // Upload 5 images at a time
+
+    // Upload before photos in batches
+    for (let i = 0; i < compressedPhotoBeforeFiles.length; i += uploadBatchSize) {
+      const batch = compressedPhotoBeforeFiles.slice(i, i + uploadBatchSize)
+      const uploadPromises = batch.map(async (buffer, batchIndex) => {
+        const globalIndex = i + batchIndex
+        const fileName = `przed-${randomUUID()}.jpg`
+        console.log(`Uploading before photo ${globalIndex + 1}/${compressedPhotoBeforeFiles.length}`)
+        const blob = await put(fileName, buffer, { access: 'public' })
+        return blob.url
+      })
+
+      const batchUrls = await Promise.all(uploadPromises)
+      photoBeforeUrls.push(...batchUrls)
+
+      // Clear batch from memory and force GC
+      batch.length = 0
+      if (global.gc) {
+        global.gc()
+      }
+      await new Promise(resolve => setTimeout(resolve, 100))
     }
 
-    for (let i = 0; i < compressedPhotoAfterFiles.length; i++) {
-      const buffer = compressedPhotoAfterFiles[i]
-      const fileName = `po-${randomUUID()}.jpg`
-      console.log(`Uploading after photo ${i + 1}/${compressedPhotoAfterFiles.length}`)
-      const blob = await put(fileName, buffer, { access: 'public' })
-      photoAfterUrls.push(blob.url)
+    // Upload after photos in batches
+    for (let i = 0; i < compressedPhotoAfterFiles.length; i += uploadBatchSize) {
+      const batch = compressedPhotoAfterFiles.slice(i, i + uploadBatchSize)
+      const uploadPromises = batch.map(async (buffer, batchIndex) => {
+        const globalIndex = i + batchIndex
+        const fileName = `po-${randomUUID()}.jpg`
+        console.log(`Uploading after photo ${globalIndex + 1}/${compressedPhotoAfterFiles.length}`)
+        const blob = await put(fileName, buffer, { access: 'public' })
+        return blob.url
+      })
+
+      const batchUrls = await Promise.all(uploadPromises)
+      photoAfterUrls.push(...batchUrls)
+
+      // Clear batch from memory and force GC
+      batch.length = 0
+      if (global.gc) {
+        global.gc()
+      }
+      await new Promise(resolve => setTimeout(resolve, 100))
     }
 
     const html = render(
