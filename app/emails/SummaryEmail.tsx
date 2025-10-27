@@ -143,7 +143,7 @@ export default function SummaryEmail({
       <Body style={mainBodyStyle}>
         
         {/* SEKCJA 1: NAGŁÓWEK (Zawsze czarne tło, biały tekst) - Pełna szerokość */}
-        <Section style={{ width: '100%', backgroundColor: '#000000', padding: '32px 0' }} className="mobile-padding">
+        <Section style={{ width: '100%', backgroundColor: '#000000', padding: '40px 0' }} className="mobile-padding">
           <ContentWrapper>
             <table style={{ width: '100%' }}>
               <tr>
@@ -181,14 +181,14 @@ export default function SummaryEmail({
         </Section>
 
         {/* SEKCJA 2: ODSTĘP PRZED POWITANIEM */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '40px 0 0 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '48px 0 0 0' }}>
           <ContentWrapper>
             {/* Puste miejsce dla elegancji */}
           </ContentWrapper>
         </Section>
 
         {/* SEKCJA 3: POWITANIE (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '16px 0 0 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '16px 0 32px 0' }}>
           <ContentWrapper>
             <Text style={{ fontSize: '20px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0', fontStyle: 'italic' }}>
               {finalGreeting}
@@ -202,7 +202,7 @@ export default function SummaryEmail({
         </Section>
 
         {/* SEKCJA 4: ODSTĘP MIĘDZY SEKCJAMI */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '32px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '8px 0 40px 0' }}>
           <ContentWrapper>
             <Hr style={{ margin: '0 auto', borderColor: '#e5e7eb', width: '60%', borderWidth: '1px' }} />
           </ContentWrapper>
@@ -210,7 +210,7 @@ export default function SummaryEmail({
 
         {/* SEKCJA 5: SZCZEGÓŁY USŁUGI (Białe tło, Ciemny tekst) */}
         {(servicePackage || cemetery || graveLocation) && (
-          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 32px 0' }}>
+          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 40px 0' }}>
             <ContentWrapper>
               <Text style={{ fontSize: '20px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0', letterSpacing: '0.5px' }}>
                 Szczegóły Usługi
@@ -240,7 +240,7 @@ export default function SummaryEmail({
         )}
 
         {/* SEKCJA 6: ODSTĘP MIĘDZY SEKCJAMI */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '24px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '8px 0 40px 0' }}>
           <ContentWrapper>
             <Hr style={{ margin: '0 auto', borderColor: '#e5e7eb', width: '60%', borderWidth: '1px' }} />
           </ContentWrapper>
@@ -248,7 +248,7 @@ export default function SummaryEmail({
 
         {/* SEKCJA 7: WYKONANE USŁUGI (Białe tło, Ciemny tekst) */}
         {services.length > 0 && (
-          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 32px 0' }}>
+          <Section style={{ backgroundColor: '#ffffff', padding: '0 0 40px 0' }}>
             <ContentWrapper>
               <Text style={{ fontSize: '20px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0', letterSpacing: '0.5px' }}>
                 Wykonane Usługi
@@ -272,7 +272,7 @@ export default function SummaryEmail({
         )}
 
         {/* SEKCJA 8: OPIS PRAC (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '0 0 32px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '0 0 40px 0' }}>
           <ContentWrapper>
             <Text style={{ fontSize: '20px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0', letterSpacing: '0.5px' }}>
               Zakres Wykonanych Prac
@@ -285,7 +285,7 @@ export default function SummaryEmail({
 
         {/* SEKCJA 8: DOKUMENTACJA FOTOGRAFICZNA (Białe tło, Ciemny tekst) */}
         {(photoBeforeUrls.length > 0 || photoAfterUrls.length > 0) && (
-          <Section style={{ backgroundColor: '#ffffff', padding: '40px 0' }}>
+          <Section style={{ backgroundColor: '#ffffff', padding: '40px 0 48px 0' }}>
             <ContentWrapper>
               <Text style={{ fontSize: '24px', lineHeight: '36px', fontWeight: '700', color: '#111827', margin: '0 0 24px 0', textAlign: 'center' as const }}>
                 📸 Dokumentacja fotograficzna
@@ -317,7 +317,7 @@ export default function SummaryEmail({
         )}
 
         {/* SEKCJA 9: OPINIA GOOGLE (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '60px 0 80px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '60px 0 60px 0' }}>
           <ContentWrapper>
             <Section style={{ backgroundColor: '#f8f9fa', borderRadius: '12px', padding: '32px 16px', textAlign: 'center' as const }} className="mobile-padding">
               <Text style={{ fontSize: '22px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 8px 0' }} className="mobile-font-size">
@@ -340,7 +340,7 @@ export default function SummaryEmail({
         </Section>
 
         {/* SEKCJA 10: PODZIĘKOWANIE (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '40px 0 60px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '50px 0 70px 0' }}>
           <ContentWrapper>
             <Hr style={{ margin: '0 0 30px 0', borderColor: '#e5e7eb' }} />
             <Text style={{ textAlign: 'center' as const, fontSize: '20px', lineHeight: '32px', color: '#4b5563', fontStyle: 'italic', margin: '0', fontWeight: '500' }}>
@@ -350,7 +350,7 @@ export default function SummaryEmail({
         </Section>
         
         {/* SEKCJA 11: STOPKA (Zawsze czarne tło, biały tekst) - Zwiększony padding góry */}
-        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '10px 0 40px 0', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
+        <Section style={{ width: '100%', backgroundColor: '#000000', color: '#f2f2f2', padding: '48px 0 50px 0', boxShadow: 'rgba(0, 0, 0, 0.6) 0px 4px 10px' }}>
           <ContentWrapper>
             <table style={{ width: '100%', tableLayout: 'fixed' }}>
               <Row>
