@@ -276,38 +276,43 @@ export default function SummaryEmail({
           </ContentWrapper>
         </Section>
 
-        {/* SEKCJA 8: ZDJĘCIA PRZED (Białe tło, Ciemny tekst) */}
-        {photoBeforeUrls.length > 0 && (
-          <Section style={{ backgroundColor: '#ffffff', padding: '16px 0' }}>
+        {/* SEKCJA 8: DOKUMENTACJA FOTOGRAFICZNA (Białe tło, Ciemny tekst) */}
+        {(photoBeforeUrls.length > 0 || photoAfterUrls.length > 0) && (
+          <Section style={{ backgroundColor: '#ffffff', padding: '40px 0' }}>
             <ContentWrapper>
-              <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0' }}>
-                Przed wykonaniem usługi
+              <Text style={{ fontSize: '24px', lineHeight: '36px', fontWeight: '700', color: '#111827', margin: '0 0 24px 0', textAlign: 'center' as const }}>
+                📸 Dokumentacja fotograficzna
               </Text>
-              <Section style={{ margin: '8px 0' }}>
-                {renderImageGrid(photoBeforeUrls)}
-              </Section>
-            </ContentWrapper>
-          </Section>
-        )}
 
-        {/* SEKCJA 9: ZDJĘCIA PO (Białe tło, Ciemny tekst) */}
-        {photoAfterUrls.length > 0 && (
-          <Section style={{ backgroundColor: '#ffffff', padding: '16px 0' }}>
-            <ContentWrapper>
-              <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0' }}>
-                Po wykonaniu usługi
-              </Text>
-              <Section style={{ margin: '8px 0' }}>
-                {renderImageGrid(photoAfterUrls)}
-              </Section>
+              {photoBeforeUrls.length > 0 && (
+                <Section style={{ marginBottom: '32px' }}>
+                  <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0' }}>
+                    Przed wykonaniem usługi
+                  </Text>
+                  <Section style={{ margin: '8px 0' }}>
+                    {renderImageGrid(photoBeforeUrls)}
+                  </Section>
+                </Section>
+              )}
+
+              {photoAfterUrls.length > 0 && (
+                <Section>
+                  <Text style={{ fontSize: '20px', lineHeight: '30px', fontWeight: '600', color: '#111827', margin: '0 0 16px 0' }}>
+                    Po wykonaniu usługi
+                  </Text>
+                  <Section style={{ margin: '8px 0' }}>
+                    {renderImageGrid(photoAfterUrls)}
+                  </Section>
+                </Section>
+              )}
             </ContentWrapper>
           </Section>
         )}
 
         {/* SEKCJA 9: OPINIA GOOGLE (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '32px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '120px 0 160px 0' }}>
           <ContentWrapper>
-            <Section style={{ backgroundColor: '#f8f9fa', borderRadius: '12px', padding: '24px 16px', textAlign: 'center' as const }} className="mobile-padding">
+            <Section style={{ backgroundColor: '#f8f9fa', borderRadius: '12px', padding: '32px 16px', textAlign: 'center' as const }} className="mobile-padding">
               <Text style={{ fontSize: '22px', lineHeight: '32px', fontWeight: '600', color: '#111827', margin: '0 0 8px 0' }} className="mobile-font-size">
                 ⭐ Podziel się swoją opinią
               </Text>
@@ -315,35 +320,32 @@ export default function SummaryEmail({
                 Twoja opinia pomoże nam w doskonaleniu naszych usług.
               </Text>
               <div style={{ textAlign: 'center', margin: '20px 0' }}>
-                <div style={{ textAlign: 'center', margin: '20px 0' }}>
-                  <Button
-                    style={{...opinionButtonStyle, fontSize: '16px', padding: '14px 16px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', minWidth: '200px'}}
-                    className="mobile-full-width"
-                    href="https://g.page/r/CYrcRTvHckvaEBM/review"
-                  >
-                    <Img
-                      src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg"
-                      width="20"
-                      height="20"
-                      alt="Google"
-                      style={{
-                        verticalAlign: 'middle',
-                        filter: "invert(52%) sepia(97%) saturate(7470%) hue-rotate(1deg) brightness(101%) contrast(104%)"
-                      }}
-                    />
-                    Zostaw opinię w Google
-                  </Button>
-                </div>
+                <Button
+                  style={{...opinionButtonStyle, fontSize: '16px', padding: '14px 16px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', minWidth: '200px'}}
+                  className="mobile-full-width"
+                  href="https://g.page/r/CYrcRTvHckvaEBM/review"
+                >
+                  <Img
+                    src="https://czystepomniki-app-backend.vercel.app/social/google.svg"
+                    width="20"
+                    height="20"
+                    alt="Google"
+                    style={{
+                      verticalAlign: 'middle'
+                    }}
+                  />
+                  Zostaw opinię w Google
+                </Button>
               </div>
             </Section>
           </ContentWrapper>
         </Section>
 
         {/* SEKCJA 10: PODZIĘKOWANIE (Białe tło, Ciemny tekst) */}
-        <Section style={{ backgroundColor: '#ffffff', padding: '0 0 24px 0' }}>
+        <Section style={{ backgroundColor: '#ffffff', padding: '80px 0 120px 0' }}>
           <ContentWrapper>
-            <Hr style={{ margin: '0 0 24px 0', borderColor: '#e5e7eb' }} />
-            <Text style={{ textAlign: 'center' as const, fontSize: '18px', lineHeight: '28px', color: '#4b5563', fontStyle: 'italic', margin: '0' }}>
+            <Hr style={{ margin: '0 0 60px 0', borderColor: '#e5e7eb' }} />
+            <Text style={{ textAlign: 'center' as const, fontSize: '20px', lineHeight: '32px', color: '#4b5563', fontStyle: 'italic', margin: '0', fontWeight: '500' }}>
               Dziękujemy za zaufanie i możliwość zadbania o miejsce pamięci Państwa bliskich.
             </Text>
           </ContentWrapper>
@@ -375,26 +377,24 @@ export default function SummaryEmail({
                   {/* Ikona Facebook */}
                   <Link href="https://www.facebook.com/people/Czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }}>
                     <Img
-                      src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg"
+                      src="https://czystepomniki-app-backend.vercel.app/social/faceboook.svg"
                       width="24"
                       height="24"
                       alt="Facebook"
                       style={{
-                        verticalAlign: 'middle',
-                        filter: "invert(19%) sepia(87%) saturate(2478%) hue-rotate(201deg) brightness(95%) contrast(97%)"
+                        verticalAlign: 'middle'
                       }}
                     />
                   </Link>
                   {/* Ikona X (Twitter) */}
                   <Link href="https://x.com/czystepomnikipl/" rel="noopener" style={{ margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }}>
                     <Img
-                      src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg"
+                      src="https://czystepomniki-app-backend.vercel.app/social/x.svg"
                       width="24"
                       height="24"
                       alt="X (Twitter)"
                       style={{
-                        verticalAlign: 'middle',
-                        filter: "invert(0%)"
+                        verticalAlign: 'middle'
                       }}
                     />
                   </Link>
