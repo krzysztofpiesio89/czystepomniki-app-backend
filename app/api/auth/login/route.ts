@@ -13,9 +13,33 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user from database
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { email }
     })
+
+    // Special handling for superadmin email
+    if (email === 'admin@czystepomniki.pl') {
+      if (!user) {
+        // Create superadmin user if doesn't exist
+        user = await prisma.user.create({
+          data: {
+            email: 'admin@czystepomniki.pl',
+            name: 'Super Admin',
+            passwordHash: Buffer.from('admin123').toString('base64'), // Default password
+            role: 'superadmin',
+            isFirstLogin: false
+          }
+        })
+      } else {
+        // Ensure existing user has superadmin role
+        if (user.role !== 'superadmin') {
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: { role: 'superadmin' }
+          })
+        }
+      }
+    }
 
     if (!user) {
       return NextResponse.json(
